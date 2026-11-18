@@ -60,3 +60,24 @@ Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os a
 - O filtro de aparelhos exibe modelos de referência e modelos dos produtos cadastrados; só mostra como compatíveis aqueles vinculados ao produto.
 - No Netlify, cadastre as mesmas variáveis `VITE_...` em Environment Variables. O arquivo `netlify.toml` já contém o redirecionamento SPA.
 - Nunca publique `.env.local` ou senhas no GitHub.
+
+
+## Visual novo do site público (desktop e celular)
+
+O projeto agora segue uma vitrine com azul escuro, azul vibrante, fundo claro e botões de WhatsApp:
+
+- **Início** (`src/pages/Inicio.tsx`): banner, benefícios, busca por aparelho, categorias e produtos em destaque.
+- **Catálogo** (`src/pages/Catalogo.tsx`): pesquisa com sugestões, filtros por categoria/marca/modelo, ordenação e painel de filtros no celular.
+- **Detalhes** (`src/pages/DetalheProduto.tsx`): foto/ilustração, preço, quantidade, compatibilidade, favoritar, adicionar à sacola e comprar no WhatsApp.
+- **Cabeçalho e navegação inferior** (`src/components/Header.tsx`, `NavegacaoMobile.tsx`): menus adequados para computador e celular.
+- **Cartões e imagens** (`src/components/CardProduto.tsx`, `ImagemProduto.tsx`): mostram fotos cadastradas por URL ou ilustrações para os exemplos.
+
+**Para testar:** `npm install`, `npm run dev`, abrir `http://localhost:5173` e testar o modo responsivo (F12 no navegador).
+
+O telefone oficial fica em `src/data/loja.ts`. Até ele ser informado, o botão de comprar pelo WhatsApp fica indisponível; a sacola continua podendo ser testada.
+
+Favoritos ficam neste navegador. A sacola é temporária (perde os itens quando a página é recarregada). Isso é intencional nesta versão inicial.
+
+**Fotografias:** as imagens de referência serviram como inspiração de layout, e não foram copiadas. Os produtos demonstrativos usam ilustrações CSS até que a loja cadastre fotos reais. A página de detalhes exibe uma miniatura enquanto o cadastro tiver somente uma imagem.
+
+Não foram alterados o painel administrativo, o banco de dados nem os registros existentes.
