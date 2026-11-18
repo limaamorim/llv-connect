@@ -1,5 +1,6 @@
 import { Menu, Search, ShoppingBag, X } from 'lucide-react';
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 type Props = {
   onInicio:()=>void; onCatalogo:()=>void; onCategoria:(categoria:string)=>void;
   onBuscar:(busca:string)=>void; onSacola:()=>void; quantidade:number;
@@ -7,7 +8,7 @@ type Props = {
 export function Header({onInicio,onCatalogo,onCategoria,onBuscar,onSacola,quantidade}:Props) {
   const [aberto,setAberto]=useState(false);
   const [busca,setBusca]=useState('');
-  function pesquisar(e:React.FormEvent){e.preventDefault();onBuscar(busca);setAberto(false);}
+  function pesquisar(e:FormEvent){e.preventDefault();onBuscar(busca);setAberto(false);}
   return <header className="site-header">
     <div className="container header-novo">
       <button className="menu-mobile" aria-label="Abrir menu" onClick={()=>setAberto(!aberto)}>{aberto?<X/>:<Menu/>}</button>
