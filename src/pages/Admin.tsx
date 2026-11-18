@@ -10,7 +10,7 @@ const vazio = { nome: '', descricao: '', categoria: '', preco: 0, custo: 0, esto
 
 // Os campos do formulário usam o mesmo formato de Produto, sem o ID.
 export function Admin({ onInicio }: { onInicio: () => void }) {
-  const [autenticado, setAutenticado] = useState(temSessao());
+  const [autenticado, setAutenticado] = useState(!configurado || temSessao());
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [aba, setAba] = useState<Aba>('resumo');
@@ -48,7 +48,6 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
     setFormulario({ nome: item.nome, descricao: item.descricao, categoria: item.categoria, preco: item.preco, custo: item.custo || 0, estoque: item.estoque || 0, imagem: item.imagem, modelos: item.modelos || [], destaque: !!item.destaque, novidade: !!item.novidade, ativo: item.ativo !== false });
   }
 
-  if (!configurado) return <main className="container admin-wrap"><h1>Configuração do administrador</h1><p>Para proteger os produtos e as vendas, o painel só funciona depois que o Supabase estiver configurado.</p><p>Consulte o <code>README.md</code> e execute o arquivo <code>supabase/schema.sql</code>.</p><button className="btn btn-primary" onClick={onInicio}>Voltar à loja</button></main>;
 
   if (!autenticado) return <main className="container admin-wrap"><form className="admin-login" onSubmit={async e => { e.preventDefault(); setErro(''); setCarregando(true); try { await entrar(email, senha); setAutenticado(true); } catch (e) { setErro(e instanceof Error ? e.message : 'Falha no login'); } finally { setCarregando(false); } }}><h1>Área administrativa</h1><p>Acesso exclusivo da equipe LLV Connect.</p><label>E-mail<input type="email" required value={email} onChange={e => setEmail(e.target.value)}/></label><label>Senha<input type="password" required value={senha} onChange={e => setSenha(e.target.value)}/></label>{erro && <p className="admin-erro">{erro}</p>}<button className="btn btn-primary" disabled={carregando}>Entrar</button><button type="button" className="link-button" onClick={onInicio}>Voltar à loja</button></form></main>;
 
@@ -57,7 +56,8 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
   const itemVenda = produtos.find(p => String(p.id) === vendaProduto);
 
   return <main className="container admin-wrap">
-    <div className="admin-top"><div><p className="eyebrow">LLV CONNECT</p><h1>Painel administrativo</h1><p>Controle os produtos e as vendas em um só lugar.</p></div><button className="btn btn-outline" onClick={() => { sair(); setAutenticado(false); }}><LogOut size={17}/> Sair</button></div>
+    <div className="admin-top"><div><p className="eyebrow">LLV CONNECT</p><h1>Painel administrativo</h1><p>Controle os produtos e as vendas em um só lugar.</p></div>{configurado && <button className="btn btn-outline" onClick={() => { sair(); setAutenticado(false); }}><LogOut size={17}/> Sair</button>}</div>
+    {!configurado && <p className="admin-sucesso"><strong>Modo demonstração:</strong> sem login e sem Supabase. As alterações ficam apenas neste navegador e não são seguras para uso comercial.</p>}
     <nav className="admin-tabs" aria-label="Menu administrativo">
       {([{id:'resumo',texto:'Dashboard',icone:BarChart3},{id:'produtos',texto:'Produtos',icone:Boxes},{id:'categorias',texto:'Categorias',icone:FolderPlus},{id:'vendas',texto:'Vendas',icone:ShoppingBag}] as const).map(({id,texto,icone:Icone}) => <button key={id} className={aba===id?'selected':''} onClick={()=>{setAba(id);setErro('');setMensagem('')}}><Icone size={17}/>{texto}</button>)}
     </nav>
