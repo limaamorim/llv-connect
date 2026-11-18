@@ -1,6 +1,13 @@
 /* Cores principais do projeto: altere aqui para mudar a identidade visual. */
 :root {
-  font-family:     Inter,     ui-sans-serif,     system-ui,     -apple-system,     BlinkMacSystemFont,     'Segoe UI',     sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   color: #122039;
   background: #fff;
   font-synthesis: none;
@@ -21,7 +28,9 @@ body {
   margin: 0;
 }
 
-button, input, select {
+button,
+input,
+select {
   font: inherit;
 }
 
@@ -94,20 +103,23 @@ a {
   margin-top: 2px;
 }
 
-.desktop-nav, .header-actions {
+.desktop-nav,
+.header-actions {
   display: flex;
   align-items: center;
   gap: 28px;
 }
 
-.desktop-nav button, .header-actions button {
+.desktop-nav button,
+.header-actions button {
   border: 0;
   background: transparent;
   color: var(--navy);
   padding: 5px;
 }
 
-.desktop-nav button, .desktop-nav a {
+.desktop-nav button,
+.desktop-nav a {
   font-size: 14px;
   font-weight: 600;
 }
@@ -179,7 +191,9 @@ a {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  transition:     transform 0.2s,     background 0.2s;
+  transition:
+    transform 0.2s,
+    background 0.2s;
 }
 
 .btn:hover:not(:disabled) {
@@ -235,7 +249,10 @@ a {
   border: 10px solid #151f36;
   border-radius: 38px;
   background: linear-gradient(135deg, #0d1325, #164caa 56%, #050b18);
-  box-shadow:     17px 26px 45px #0009,     inset 0 0 0 2px #667891,     0 0 60px #2478ff55;
+  box-shadow:
+    17px 26px 45px #0009,
+    inset 0 0 0 2px #667891,
+    0 0 60px #2478ff55;
   transform: rotate(-13deg);
   display: flex;
   flex-direction: column;
@@ -332,7 +349,9 @@ a {
   margin: 0 0 8px;
 }
 
-.finder h2, .section h2, .banner h2 {
+.finder h2,
+.section h2,
+.banner h2 {
   font-size: 27px;
   letter-spacing: -0.8px;
   margin: 0;
@@ -420,10 +439,13 @@ select:disabled {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  transition:     box-shadow 0.2s,     transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
-.category-card:hover, .product-card:hover {
+.category-card:hover,
+.product-card:hover {
   box-shadow: 0 14px 32px #0e23431c;
   transform: translateY(-3px);
 }
@@ -471,7 +493,9 @@ select:disabled {
   display: flex;
   flex-direction: column;
   color: var(--navy);
-  transition:     box-shadow 0.2s,     transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .product-picture {
@@ -594,13 +618,15 @@ select:disabled {
   margin-top: 0;
 }
 
-.footer p, .footer a {
+.footer p,
+.footer a {
   color: #9eafc9;
   font-size: 13px;
   line-height: 1.9;
 }
 
-.footer a, .footer p:has(svg) {
+.footer a,
+.footer p:has(svg) {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -635,7 +661,8 @@ select:disabled {
   margin: 30px 0;
 }
 
-.catalog-heading h1, .detail-info h1 {
+.catalog-heading h1,
+.detail-info h1 {
   font-size: clamp(29px, 3.5vw, 42px);
   letter-spacing: -1.5px;
   margin: 0;
@@ -870,7 +897,6 @@ select:disabled {
   .catalog-products {
     grid-template-columns: repeat(2, 1fr);
   }
-
 }
 
 @media (max-width: 720px) {
@@ -962,7 +988,8 @@ select:disabled {
     padding: 22px 17px;
   }
 
-  .finder h2,   .section h2 {
+  .finder h2,
+  .section h2 {
     font-size: 22px;
   }
 
@@ -1062,7 +1089,8 @@ select:disabled {
     column-gap: 12px;
   }
 
-  .filters h3,   .filter-info {
+  .filters h3,
+  .filter-info {
     grid-column: 1/-1;
   }
 
@@ -1098,7 +1126,6 @@ select:disabled {
   .detail-price {
     font-size: 33px;
   }
-
 }
 
 @media (max-width: 390px) {
@@ -1126,7 +1153,6 @@ select:disabled {
   .product-picture {
     height: 140px;
   }
-
 }
 
 /* Busca de aparelhos inspirada na referência enviada pelo cliente */
@@ -1223,7 +1249,8 @@ select:disabled {
   font-size: 13px;
 }
 
-.finder-separator:before, .finder-separator:after {
+.finder-separator:before,
+.finder-separator:after {
   content: '';
   height: 1px;
   background: #e5eaf1;
@@ -1272,7 +1299,8 @@ select:disabled {
   font-size: 12px;
 }
 
-.product-photo, .detail-photo {
+.product-photo,
+.detail-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1318,7 +1346,8 @@ select:disabled {
   gap: 14px;
 }
 
-.admin-form label, .admin-login label {
+.admin-form label,
+.admin-login label {
   display: grid;
   gap: 6px;
   font-size: 13px;
@@ -1326,7 +1355,11 @@ select:disabled {
   color: #293c57;
 }
 
-.admin-form input:not([type='checkbox']), .admin-form select, .admin-form textarea, .admin-login input, .admin-inline input {
+.admin-form input:not([type='checkbox']),
+.admin-form select,
+.admin-form textarea,
+.admin-login input,
+.admin-inline input {
   font: inherit;
   width: 100%;
   border: 1px solid #dce3ee;
@@ -1503,7 +1536,8 @@ select:disabled {
   margin-bottom: 15px;
 }
 
-.admin-erro, .admin-sucesso {
+.admin-erro,
+.admin-sucesso {
   padding: 12px 16px;
   border-radius: 10px;
   margin: 12px 0;
@@ -1527,7 +1561,6 @@ select:disabled {
   .admin-columns {
     grid-template-columns: 1fr;
   }
-
 }
 
 @media (max-width: 620px) {
@@ -1574,7 +1607,6 @@ select:disabled {
   .admin-actions {
     align-self: flex-end;
   }
-
 }
 
 /* ============================================================
@@ -1694,7 +1726,8 @@ button {
   color: #92abc3;
 }
 
-.icone-header, .menu-mobile {
+.icone-header,
+.menu-mobile {
   border: 0;
   background: none;
   color: white;
@@ -1856,7 +1889,14 @@ button {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: radial-gradient(     circle,     #142335 18%,     #506d8c 30%,     #080f1b 47%,     #7d9abb 62%,     #17273a 75%   );
+  background: radial-gradient(
+    circle,
+    #142335 18%,
+    #506d8c 30%,
+    #080f1b 47%,
+    #7d9abb 62%,
+    #17273a 75%
+  );
   border: 1px solid #8a9cb6;
 }
 
@@ -1884,7 +1924,8 @@ button {
   border-top: 7px solid #edf3fb;
 }
 
-.hero-earbuds:before, .hero-earbuds:after {
+.hero-earbuds:before,
+.hero-earbuds:after {
   content: '';
   position: absolute;
   top: -42px;
@@ -2000,7 +2041,9 @@ button {
   overflow: hidden;
   border-radius: 11px;
   border: 1px solid #e5eaf2;
-  transition:     transform 0.2s,     box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .produto-clicavel {
@@ -2065,7 +2108,8 @@ button {
   z-index: 2;
 }
 
-.favorito-btn.ativo, .favorito-detalhe.ativo {
+.favorito-btn.ativo,
+.favorito-detalhe.ativo {
   color: #e24e6e;
 }
 
@@ -2114,7 +2158,9 @@ button {
   transform: rotate(-12deg);
   background: linear-gradient(127deg, #2f3b50, #111924 45%, #313e54 76%, #0d1829);
   border: 4px solid #66788d;
-  box-shadow:     11px 15px 18px #0b1c3040,     inset 1px 1px 2px #b5cbe2;
+  box-shadow:
+    11px 15px 18px #0b1c3040,
+    inset 1px 1px 2px #b5cbe2;
 }
 
 .camera-plate {
@@ -2452,7 +2498,9 @@ button {
   color: #8494aa;
 }
 
-.fechar-filtros, .aplicar-filtros, .filtro-fundo {
+.fechar-filtros,
+.aplicar-filtros,
+.filtro-fundo {
   display: none !important;
 }
 
@@ -2798,7 +2846,8 @@ button {
   font-size: 20px;
 }
 
-.painel-topo button, .item-sacola button {
+.painel-topo button,
+.item-sacola button {
   background: none;
   border: 0;
   color: #62768b;
@@ -2824,7 +2873,9 @@ button {
   gap: 10px;
 }
 
-.item-sacola strong, .item-sacola small, .item-sacola b {
+.item-sacola strong,
+.item-sacola small,
+.item-sacola b {
   display: block;
   margin-bottom: 7px;
 }
@@ -2891,7 +2942,6 @@ button {
   .acoes-detalhe {
     grid-template-columns: 1fr;
   }
-
 }
 
 @media (max-width: 720px) {
@@ -3040,7 +3090,8 @@ button {
     border-radius: 15px;
   }
 
-  .hero-earbuds:before,   .hero-earbuds:after {
+  .hero-earbuds:before,
+  .hero-earbuds:after {
     height: 33px;
     width: 16px;
     top: -27px;
@@ -3174,7 +3225,8 @@ button {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .navegacao-mobile button,   .navegacao-mobile a {
+  .navegacao-mobile button,
+  .navegacao-mobile a {
     background: none;
     border: 0;
     display: flex;
@@ -3307,7 +3359,6 @@ button {
   .painel-sacola {
     padding: 18px;
   }
-
 }
 
 @media (max-width: 380px) {
@@ -3334,7 +3385,6 @@ button {
   .produto-clicavel .product-price {
     font-size: 17px;
   }
-
 }
 
 /* Sugestões durante a digitação na busca do catálogo */
@@ -3398,4 +3448,3 @@ button {
   color: #0879f9;
   font-size: 11px;
 }
-
