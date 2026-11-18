@@ -1,187 +1,112 @@
-# LLV Connect — Catálogo e painel administrativo
+# LLV Connect
 
-## Conectar a vitrine pública ao Supabase (sem administrador)
+Site de acessórios para celular feito em **React + TypeScript + Vite**, integrado ao **Supabase**. O catálogo é público e as compras são combinadas pelo WhatsApp. O painel `/admin` exige login e permissão.
 
-A primeira integração é **somente leitura**: o site mostra os produtos do banco para qualquer cliente, sem login. O painel `/admin` não precisa ser configurado agora.
-
-### 1. Criar as tabelas e o armazenamento
-
-1. Crie um projeto no [Supabase](https://supabase.com).
-2. Entre em **SQL Editor > New query**.
-3. Cole e execute o arquivo `supabase/catalogo_publico.sql` deste repositório.
-4. Ele prepara as tabelas públicas `categorias` e `produtos`, as permissões de leitura e um bucket público de imagens chamado `produtos`.
-5. Se você já executou `supabase/schema.sql` anteriormente, os dados existentes são preservados.
-
-**Segurança:** o cliente só consulta produtos ativos e seus campos públicos. Preço de custo, usuários e histórico de vendas não são consultados nem liberados ao público.
-
-### 2. Configurar o arquivo .env.local
-
-Na raiz do projeto, crie `.env.local`:
-
-```dotenv
-VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLICAVEL
-```
-
-Use **Project URL** e **Publishable key** nas configurações de API do seu projeto Supabase. A chave pública pode aparecer no frontend; **nunca** coloque `service_role`, `sb_secret_...` ou senhas no projeto.
-
-Reinicie o Vite depois de criar/alterar o arquivo:
+## Rodar no computador
 
 ```bash
 npm install
 npm run dev
 ```
 
-### 3. Cadastrar produtos diretamente no Supabase
+Abra `http://localhost:5173`. Para acessar o painel: `http://localhost:5173/admin`.
 
-Por enquanto, acesse **Table Editor > produtos > Insert row** e preencha:
+## 1. Conectar ao Supabase
 
-| Coluna | Exemplo | Observação |
-| --- | --- | --- |
-| `nome` | Capinha Transparente | Nome do produto |
-| `categoria` | Capinhas | Deve existir em `categorias` |
-| `preco` | 29.90 | Use ponto no valor numérico |
-| `estoque` | 10 | Quantidade disponível |
-| `descricao` | Proteção para seu celular | Texto exibido nos detalhes |
-| `imagem` | storage:capinha.jpg | Veja o passo seguinte |
-| `modelos` | ["iPhone 12 Pro","iPhone 13"] | JSON array de modelos compatíveis |
-| `destaque` | true | Exibe na página inicial |
-| `novidade` | false | Mostra selo de novidade |
-| `ativo` | true | Aparece no catálogo público |
-| `custo` | 0 | Campo interno, nunca mostrado ao cliente |
+Você já deve ter um projeto no Supabase. Na pasta principal do projeto, crie `.env.local`:
 
-**Produto universal:** informe `[]` em `modelos` (por exemplo, um fone Bluetooth genérico). O catálogo mostra esses itens mesmo quando o cliente seleciona um modelo de celular.
+```dotenv
+VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_SUA_CHAVE_PUBLICA
+```
 
-**Categorias novas:** crie primeiro a categoria na tabela `categorias`, depois use o nome exato na coluna `categoria` do produto.
+Pegue os valores em **Supabase > Project Settings > API Keys** ou na opção **Connect**.
 
-### 4. Adicionar fotos
+**Nunca coloque senha, service_role ou sb_secret_... no frontend.** O arquivo `.env.local` é ignorado pelo Git.
 
-No Supabase, abra **Storage > produtos** e envie uma foto chamada, por exemplo, `capinha.jpg`. Na coluna `imagem` da tabela `produtos`, escreva `storage:capinha.jpg`.
+Reinicie `npm run dev` depois de modificar as variáveis.
 
-Também é possível colocar a URL pública completa da imagem na coluna `imagem`. Para fotos em pastas, use `storage:pasta/foto.jpg`.
+## 2. Preparar o catálogo
 
-O bucket é público: não coloque nele documentos privados ou imagens sensíveis.
+No **Supabase > SQL Editor**, execute o arquivo:
 
-### 5. Publicar no Netlify
+- `supabase/catalogo_publico.sql` — tabelas `produtos` e `categorias`, acesso público somente de leitura e bucket público `produtos`.
 
-No site do Netlify, configure as duas variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` em **Environment variables** e faça um novo deploy. As variáveis do Vite são lidas durante a compilação; criar apenas o `.env.local` no seu computador não configura o Netlify.
+Se você já executou esse SQL e os produtos estão aparecendo no site, não precisa executar novamente.
 
-### O que já funciona
+## 3. Ativar o administrador (NOVO)
 
-- A página inicial lê categorias e produtos com `destaque = true`.
-- O catálogo lê produtos ativos, preços, descrição, estoque e imagens.
-- Os filtros por categoria e modelo usam os dados reais do Supabase.
-- Busca, favoritos, sacola e WhatsApp continuam no frontend.
-- Se o banco estiver configurado e sem produtos, a vitrine fica vazia: os exemplos locais **não** serão misturados.
-- Se não houver credenciais, continua o modo de demonstração com dados locais.
+No mesmo SQL Editor, execute **todo o arquivo**:
 
-**Atenção:** o número oficial de WhatsApp continua em `src/data/loja.ts` e ainda precisa ser informado. Não há pagamento nem registro automático de vendas no site.
+- `supabase/admin_configuracao.sql`
 
-### Arquivos principais da integração
+Ele configura a tabela `administradores`, tabela `vendas`, permissões de cadastrar/editar/excluir, a função de registrar vendas e o upload de fotos no Storage.
 
-- `src/services/catalogoService.ts`: consulta somente os produtos e categorias públicos.
-- `src/utils/imagemProduto.ts`: transforma `storage:foto.jpg` em URL de foto pública.
-- `src/App.tsx`: carrega os dados e os envia para as páginas.
-- `src/pages/Inicio.tsx` e `src/pages/Catalogo.tsx`: usam categorias, preços e produtos reais.
-- `supabase/catalogo_publico.sql`: prepara as tabelas e permissões necessárias.
+Depois, em **Authentication > Users**, copie o **UID** do usuário que você criou e execute uma nova consulta SQL:
 
----
+```sql
+insert into public.administradores (user_id)
+values ('COLE-AQUI-O-UID-DO-USUARIO')
+on conflict (user_id) do nothing;
+```
 
-Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os arquivos e nomes das funções foram escritos em português sempre que possível.
+Substitua o texto entre aspas pelo UID verdadeiro, sem adicionar novas aspas. **Não coloque esse comando dentro do código React.**
 
-## Como executar
+Abra `/admin` e faça login com o **e-mail e senha** do usuário criado no Authentication. O UID é somente para registrar a permissão, e **não é a senha**.
 
-1. Instale o Node.js.
-2. Abra a pasta e execute `npm install`.
-3. Execute `npm run dev`.
-4. Para conferir a versão de produção: `npm run build`.
+Caso o login não funcione, confira se o usuário está com o e-mail confirmado e se o UID foi inserido em `public.administradores`.
 
-## Testar o painel sem Supabase
+## 4. Cadastrar produtos com foto do dispositivo
 
-1. Execute `npm install` e `npm run dev`.
-2. Abra `http://localhost:5173/admin`.
-3. O painel abre automaticamente em **modo demonstração**, sem usuário ou senha.
-4. Teste produtos, categorias, dashboard e registro de vendas.
-5. Os dados ficam no `localStorage` deste navegador. Outros aparelhos não verão suas alterações; limpar os dados do navegador apaga as mudanças.
+Em `/admin > Produtos`:
 
-**IMPORTANTE:** o modo demonstração é aberto a qualquer visitante e **não deve ser usado em produção com dados reais**. Para colocar a loja no ar, configure o Supabase e o login seguro conforme abaixo. As informações do modo demonstração não são migradas automaticamente para o Supabase.
+1. Clique em **Novo produto** (formulário).
+2. Escolha nome, categoria, preço, custo, estoque e descrição.
+3. Em **Foto do produto**, escolha uma imagem JPG, PNG ou WebP do computador/celular (**até 5 MB**).
+4. Confira a prévia e clique em **Cadastrar produto**.
+5. A imagem será enviada para **Supabase Storage > produtos**. A coluna `imagem` recebe `storage:nome-unico.jpg` automaticamente.
 
-## Configurar Supabase (para uso real e login seguro)
+O botão **Editar** carrega os campos e a foto anterior; selecionar uma nova foto a substitui na ficha do produto. Remover a foto no formulário limpa o campo da ficha. **Arquivos antigos permanecem no Storage**, podendo ser removidos manualmente depois.
 
-1. Crie um projeto em https://supabase.com.
-2. No SQL Editor, execute o conteúdo de `supabase/schema.sql`.
-3. Copie `.env.example` para `.env.local`.
-4. Configure `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` com a URL e a chave **publicável/anon**. **Nunca coloque service_role no frontend**.
-5. Em Authentication > Users crie um usuário para o administrador (com senha forte).
-6. Copie o UUID desse usuário e execute no SQL Editor:
-   `insert into public.administradores(user_id) values ('UUID-AQUI');`
-7. Reinicie o servidor `npm run dev` e acesse **/admin**.
+Se o upload retornar **403 / row-level security**, verifique se executou `admin_configuracao.sql`, se está logado com o usuário certo e se inseriu o UID na tabela `administradores`.
 
-**Atenção:** sem Supabase, o catálogo e o painel funcionam apenas como demonstração local. O login seguro só é exigido quando o Supabase está configurado.
+## 5. Categorias, estoque e vendas
 
-## O que cada pasta faz
+- **Categorias**: cadastrar, renomear e excluir quando não há produtos vinculados.
+- **Produtos**: cadastrar, editar, ocultar (`ativo = false`) e excluir. Produtos com vendas registradas não podem ser excluídos, para manter o histórico.
+- **Vendas**: registre manualmente após confirmação no WhatsApp ou no balcão; o banco baixa o estoque.
+- **Dashboard**: faturamento, lucro bruto estimado, total de vendas e estoque. Lucro bruto não desconta impostos, frete ou outras despesas.
 
-- `src/components`: peças reutilizáveis do visual, como a busca e os cards.
-- `src/pages`: as páginas Início, Catálogo, Detalhe e Admin.
-- `src/services/supabase.ts`: acesso ao banco e login.
-- `src/types`: formato dos dados no TypeScript.
-- `src/data`: aparelhos de referência e dados demonstrativos.
-- `src/utils`: funções auxiliares, como moeda e WhatsApp.
-- `supabase/schema.sql`: tabelas, segurança e função de registrar venda.
+Não há pagamento online nem lançamento automático das conversas do WhatsApp.
 
-## Uso da loja
+## 6. Enviar ao cliente
 
-- Em /admin, cadastre categorias e produtos (nome, preço, custo, estoque e foto por URL).
-- Informe modelos compatíveis separados por vírgula. Deixe vazio para itens universais.
-- Vendas feitas pelo WhatsApp precisam ser **registradas manualmente** em Vendas.
-- Ao registrar a venda, o Supabase reduz o estoque de forma atômica.
-- O dashboard calcula faturamento e lucro **bruto** (vendas menos custo dos produtos). Não desconta impostos ou despesas.
-- Produtos com vendas registradas não podem ser apagados; desative-os em vez disso.
+O catálogo público mostra produtos ativos cadastrados no Supabase. O WhatsApp temporário configurado está em `src/data/loja.ts` e **deve ser substituído pelo WhatsApp oficial da loja após a aprovação do cliente**.
 
-## Observações
+Para publicar na Netlify, adicione `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` em **Site configuration > Environment variables** e faça um novo deploy. As variáveis do Vite são incorporadas no build, então o `.env.local` local não configura o site publicado.
 
-- Configure o WhatsApp oficial em `src/data/loja.ts`; não use telefone pessoal.
-- **Detectar aparelho automaticamente** não foi adicionado: navegadores modernos não oferecem identificação confiável de modelo. Há uma dica para encontrar o modelo nas configurações do celular.
-- Estoque é por produto, não por cor/modelo. Para controlar variações individualmente, será necessária uma próxima melhoria.
-- As imagens podem ser URLs públicas; upload para Storage não foi incluído nesta versão inicial.
-- O filtro de aparelhos exibe modelos de referência e modelos dos produtos cadastrados; só mostra como compatíveis aqueles vinculados ao produto.
-- No Netlify, cadastre as mesmas variáveis `VITE_...` em Environment Variables. O arquivo `netlify.toml` já contém o redirecionamento SPA.
-- Nunca publique `.env.local` ou senhas no GitHub.
+Antes de compartilhar, teste: início, categorias, busca, detalhes, WhatsApp, login admin, cadastro com foto, edição, estoque e venda. Em produção, evite divulgar `/admin`; porém **esconder a rota não substitui a proteção**, que é feita pelas políticas RLS no banco.
 
+## Organização do projeto
 
-## Visual novo do site público (desktop e celular)
+| Pasta/arquivo | Responsabilidade |
+| --- | --- |
+| `src/pages/Inicio.tsx` | Página inicial da loja |
+| `src/pages/Catalogo.tsx` | Pesquisa e filtros públicos |
+| `src/pages/DetalheProduto.tsx` | Informações e compra via WhatsApp |
+| `src/pages/Admin.tsx` | Painel administrativo |
+| `src/services/catalogoService.ts` | Consultas públicas ao Supabase |
+| `src/services/supabase.ts` | Login e alterações protegidas no banco |
+| `src/services/uploadImagem.ts` | Envio de foto selecionada no dispositivo |
+| `src/utils/imagemProduto.ts` | URL de imagem do Supabase Storage |
+| `src/data/loja.ts` | Instagram, WhatsApp e dados de contato |
+| `supabase/*.sql` | Preparação do banco e políticas de segurança |
 
-O projeto agora segue uma vitrine com azul escuro, azul vibrante, fundo claro e botões de WhatsApp:
-
-- **Início** (`src/pages/Inicio.tsx`): banner, benefícios, busca por aparelho, categorias e produtos em destaque.
-- **Catálogo** (`src/pages/Catalogo.tsx`): pesquisa com sugestões, filtros por categoria/marca/modelo, ordenação e painel de filtros no celular.
-- **Detalhes** (`src/pages/DetalheProduto.tsx`): foto/ilustração, preço, quantidade, compatibilidade, favoritar, adicionar à sacola e comprar no WhatsApp.
-- **Cabeçalho e navegação inferior** (`src/components/Header.tsx`, `NavegacaoMobile.tsx`): menus adequados para computador e celular.
-- **Cartões e imagens** (`src/components/CardProduto.tsx`, `ImagemProduto.tsx`): mostram fotos cadastradas por URL ou ilustrações para os exemplos.
-
-**Para testar:** `npm install`, `npm run dev`, abrir `http://localhost:5173` e testar o modo responsivo (F12 no navegador).
-
-O telefone oficial fica em `src/data/loja.ts`. Até ele ser informado, o botão de comprar pelo WhatsApp fica indisponível; a sacola continua podendo ser testada.
-
-Favoritos ficam neste navegador. A sacola é temporária (perde os itens quando a página é recarregada). Isso é intencional nesta versão inicial.
-
-**Fotografias:** as imagens de referência serviram como inspiração de layout, e não foram copiadas. Os produtos demonstrativos usam ilustrações CSS até que a loja cadastre fotos reais. A página de detalhes exibe uma miniatura enquanto o cadastro tiver somente uma imagem.
-
-Não foram alterados o painel administrativo, o banco de dados nem os registros existentes.
-
-
-## Formatação e organização do código
-
-O projeto usa **Prettier** para manter os arquivos simples de estudar. Padrão: 2 espaços de indentação, até 90 caracteres por linha quando possível, aspas simples e JSX com tags separadas.
-
-Depois de baixar o projeto com `git pull origin main`, execute:
+## Formatar o código
 
 ```bash
 npm run format
+npm run build
 ```
 
-O comando organiza todos os arquivos `.ts`, `.tsx`, `.css` e `index.html` **sem alterar a lógica**. Para verificar a formatação sem modificar arquivos: `npm run format:check`.
-
-No VS Code, instale a extensão **Prettier - Code formatter** (esbenp.prettier-vscode). A pasta `.vscode` já contém a configuração para formatar ao salvar (`Ctrl+S`). Se não puder instalar a extensão, use `npm run format` pelo terminal.
-
-O arquivo `.prettierrc.json` guarda o padrão. A rotina do GitHub Actions em `.github/workflows/padronizar-codigo.yml` também tenta formatar e registrar as alterações ao receber um push na branch `main`, se as Actions e permissões de escrita estiverem habilitadas no repositório.
+O Prettier organiza JSX/TS/CSS. A configuração está em `.prettierrc.json`; no VS Code, instale **Prettier - Code formatter** para formatar ao salvar.
