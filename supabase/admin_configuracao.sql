@@ -84,6 +84,15 @@ for select to authenticated
 using (exists(select 1 from public.administradores
               where user_id = (select auth.uid())));
 
+-- Apenas os administradores podem registrar vendas.
+drop policy if exists "llv_admin_criar_vendas" on public.vendas;
+create policy "llv_admin_criar_vendas" on public.vendas
+for insert to authenticated
+with check (exists(
+  select 1 from public.administradores
+  where user_id = (select auth.uid())
+));
+
 -- O cadastro de vendas só ocorre via função registrar_venda,
 -- que confere permissões e atualiza estoque em uma transação.
 create or replace function public.registrar_venda(
