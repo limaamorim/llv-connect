@@ -1,15 +1,29 @@
-import { Instagram, Menu, Search, Smartphone } from 'lucide-react';
-import { loja } from '../data/loja';
-
-type Props = { onInicio: () => void; onCatalogo: () => void };
-
-export function Header({ onInicio, onCatalogo }: Props) {
-  return <>
-    <div className="topbar">Tudo para seu celular em um só lugar ✨</div>
-    <header className="header container">
-      <button className="brand" onClick={onInicio} aria-label="Voltar ao início"><span className="brand-icon"><Smartphone size={23}/></span><span><strong>LLV<span className="blue">CONNECT</span></strong><small>ACESSÓRIOS PARA CELULAR</small></span></button>
-      <nav className="desktop-nav"><button onClick={onInicio}>Início</button><button onClick={onCatalogo}>Todos os produtos</button><a href={loja.instagram} target="_blank" rel="noreferrer">Instagram</a></nav>
-      <div className="header-actions"><button onClick={onCatalogo} aria-label="Buscar produtos"><Search size={21}/></button><a href={loja.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={21}/></a><button className="mobile-menu" onClick={onCatalogo} aria-label="Abrir catálogo"><Menu size={22}/></button></div>
-    </header>
-  </>;
+import { Menu, Search, ShoppingBag, X } from 'lucide-react';
+import { useState } from 'react';
+type Props = {
+  onInicio:()=>void; onCatalogo:()=>void; onCategoria:(categoria:string)=>void;
+  onBuscar:(busca:string)=>void; onSacola:()=>void; quantidade:number;
+};
+export function Header({onInicio,onCatalogo,onCategoria,onBuscar,onSacola,quantidade}:Props) {
+  const [aberto,setAberto]=useState(false);
+  const [busca,setBusca]=useState('');
+  function pesquisar(e:React.FormEvent){e.preventDefault();onBuscar(busca);setAberto(false);}
+  return <header className="site-header">
+    <div className="container header-novo">
+      <button className="menu-mobile" aria-label="Abrir menu" onClick={()=>setAberto(!aberto)}>{aberto?<X/>:<Menu/>}</button>
+      <button className="brand-nova" onClick={onInicio} aria-label="LLV Connect - início"><b><span>L</span>LV</b><small>CONNECT</small></button>
+      <nav className={'nav-nova '+(aberto?'menu-aberto':'')}>
+        <button onClick={()=>{onInicio();setAberto(false)}}>Início</button>
+        <button onClick={()=>{onCatalogo();setAberto(false)}}>Produtos</button>
+        <button onClick={()=>{onCategoria('Capinhas');setAberto(false)}}>Capinhas</button>
+        <button onClick={()=>{onCategoria('Películas');setAberto(false)}}>Películas</button>
+        <button onClick={()=>{onCategoria('Fones');setAberto(false)}}>Fones</button>
+      </nav>
+      <div className="header-lateral">
+        <form className="busca-header" onSubmit={pesquisar}><Search size={17}/><input aria-label="Buscar produto" placeholder="Buscar acessórios..." value={busca} onChange={e=>setBusca(e.target.value)}/></form>
+        <button className="icone-header" onClick={()=>onBuscar('')} aria-label="Buscar"><Search size={21}/></button>
+        <button className="icone-header sacola-topo" aria-label={'Sacola, '+quantidade+' itens'} onClick={onSacola}><ShoppingBag size={22}/>{quantidade>0&&<span>{quantidade}</span>}</button>
+      </div>
+    </div>
+  </header>;
 }
