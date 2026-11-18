@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { X, ShoppingBag, Trash2, MessageCircle } from 'lucide-react';
+
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { NavegacaoMobile } from './components/NavegacaoMobile';
@@ -6,15 +8,22 @@ import { Inicio } from './pages/Inicio';
 import { Catalogo } from './pages/Catalogo';
 import { DetalheProduto } from './pages/DetalheProduto';
 import { Admin } from './pages/Admin';
+
 import { produtos as exemplos } from './data/produtos';
-import { configurado, listarProdutos } from './services/supabase';
 import { loja } from './data/loja';
+import { configurado, listarProdutos } from './services/supabase';
 import { moeda } from './utils/whatsapp';
 import type { Produto } from './types/produto';
-import { X, ShoppingBag, Trash2, MessageCircle } from 'lucide-react';
 
 type Pagina = 'inicio' | 'catalogo' | 'detalhe' | 'admin';
-type ItemSacola = { produto: Produto; modelo: string; quantidade: number };
+
+type ItemSacola = {
+  produto: Produto;
+  modelo: string;
+  quantidade: number;
+};
+
+// Recupera os favoritos que o cliente salvou no navegador.
 function iniciarFavoritos(): number[] {
   try {
     return JSON.parse(localStorage.getItem('llv-favoritos') || '[]');
@@ -24,10 +33,13 @@ function iniciarFavoritos(): number[] {
 }
 
 export default function App() {
+  // Estados compartilhados entre a página inicial, catálogo e detalhes.
   const [pagina, setPagina] = useState<Pagina>(
     location.pathname.startsWith('/admin') ? 'admin' : 'inicio',
   );
-  const [produtos, setProdutos] = useState<Produto[]>(configurado ? [] : exemplos);
+  const [produtos, setProdutos] = useState<Produto[]>(
+    configurado ? [] : exemplos,
+  );
   const [produto, setProduto] = useState<Produto | null>(null);
   const [categoria, setCategoria] = useState('');
   const [modelo, setModelo] = useState('');
@@ -37,57 +49,106 @@ export default function App() {
   const [sacolaAberta, setSacolaAberta] = useState(false);
   const [erro, setErro] = useState('');
 
+  // Atualiza a lista quando o cliente abre uma página pública.
   useEffect(() => {
     if (pagina === 'admin') return;
+
     listarProdutos()
       .then(setProdutos)
-      .catch((e) => setErro(e.message));
+      .catch((erro) => setErro(erro.message));
   }, [pagina]);
+
+  // Permite usar o botão Voltar do navegador.
   useEffect(() => {
-    const voltar = () =>
-      setPagina(location.pathname.startsWith('/admin') ? 'admin' : 'inicio');
+    const voltar = () => {
+      setPagina(
+        location.pathname.startsWith('/admin') ? 'admin' : 'inicio',
+      );
+    };
+
     addEventListener('popstate', voltar);
+
     return () => removeEventListener('popstate', voltar);
   }, []);
 
-  function navegar(p: Pagina) {
-    setPagina(p);
-    history.pushState({}, '', p === 'admin' ? '/admin' : '/');
+  function navegar(novaPagina: Pagina) {
+    setPagina(novaPagina);
+    history.pushState(
+      {},
+      '',
+      novaPagina === 'admin' ? '/admin' : '/',
+    );
     window.scrollTo(0, 0);
   }
-  function abrirCatalogo(categoriaNova = '', modeloNovo = '', buscaNova = '') {
+
+  function abrirCatalogo(
+    categoriaNova = '',
+    modeloNovo = '',
+    buscaNova = '',
+  ) {
     setCategoria(categoriaNova);
     setModelo(modeloNovo);
     setPesquisa(buscaNova);
     navegar('catalogo');
   }
-  function abrirProduto(p: Produto) {
-    setProduto(p);
+
+  function abrirProduto(item: Produto) {
+    setProduto(item);
     navegar('detalhe');
   }
+
   function alternarFavorito(id: number) {
     setFavoritos((anteriores) => {
       const atualizados = anteriores.includes(id)
-        ? anteriores.filter((n) => n !== id)
+        ? anteriores.filter((item) => item !== id)
         : [...anteriores, id];
-      localStorage.setItem('llv-favoritos', JSON.stringify(atualizados));
+
+      localStorage.setItem(
+        'llv-favoritos',
+        JSON.stringify(atualizados),
+      );
+
       return atualizados;
     });
   }
-  function adicionarSacola(p: Produto, modeloSelecionado: string, quantidade: number) {
+
+  function adicionarSacola(
+    item: Produto,
+    modeloSelecionado: string,
+    quantidade: number,
+  ) {
     setSacola((lista) => {
       const indice = lista.findIndex(
-        (i) => i.produto.id === p.id && i.modelo === modeloSelecionado,
+        (selecionado) =>
+          selecionado.produto.id === item.id &&
+          selecionado.modelo === modeloSelecionado,
       );
-      if (indice < 0)
-        return [...lista, { produto: p, modelo: modeloSelecionado, quantidade }];
-      return lista.map((item, n) =>
-        n === indice ? { ...item, quantidade: item.quantidade + quantidade } : item,
+
+      if (indice < 0) {
+        return [
+          ...lista,
+          { produto: item, modelo: modeloSelecionado, quantidade },
+        ];
+      }
+
+      return lista.map((selecionado, posicao) =>
+        posicao === indice
+          ? {
+              ...selecionado,
+              quantidade: selecionado.quantidade + quantidade,
+            }
+          : selecionado,
       );
     });
+
     setSacolaAberta(true);
   }
-  const quantidadeSacola = sacola.reduce((total, item) => total + item.quantidade, 0);
+
+  const quantidadeSacola = sacola.reduce(
+    (total, item) => total + item.quantidade,
+    0,
+  );
+
   const textoSacola = sacola
     .map(
       (item) =>
@@ -100,10 +161,12 @@ export default function App() {
         moeda(item.produto.preco),
     )
     .join('\n');
+
   const totalSacola = sacola.reduce(
     (total, item) => total + item.produto.preco * item.quantidade,
     0,
   );
+
   const linkSacola = loja.whatsapp
     ? 'https://wa.me/' +
       loja.whatsapp +
@@ -116,28 +179,35 @@ export default function App() {
       )
     : null;
 
-  if (pagina === 'admin') return <Admin onInicio={() => navegar('inicio')} />;
+  // A página administrativa mantém seu próprio layout.
+  if (pagina === 'admin') {
+    return <Admin onInicio={() => navegar('inicio')} />;
+  }
 
   return (
     <>
       <Header
         onInicio={() => navegar('inicio')}
         onCatalogo={() => abrirCatalogo()}
-        onCategoria={(c) => abrirCatalogo(c)}
-        onBuscar={(b) => abrirCatalogo('', '', b)}
+        onCategoria={(novaCategoria) => abrirCatalogo(novaCategoria)}
+        onBuscar={(busca) => abrirCatalogo('', '', busca)}
         onSacola={() => setSacolaAberta(true)}
         quantidade={quantidadeSacola}
       />
+
       {erro && (
         <p className="container admin-erro">
           Não foi possível carregar o catálogo: {erro}
         </p>
       )}
+
       {!configurado && (
         <div className="demo-notice">
           Vitrine demonstrativa: produtos e preços fictícios.
         </div>
       )}
+
+      {/* Exibe apenas a página selecionada */}
       {pagina === 'inicio' && (
         <Inicio
           produtos={produtos}
@@ -147,6 +217,7 @@ export default function App() {
           onFavorito={alternarFavorito}
         />
       )}
+
       {pagina === 'catalogo' && (
         <Catalogo
           key={[categoria, modelo, pesquisa].join('|')}
@@ -159,41 +230,57 @@ export default function App() {
           onFavorito={alternarFavorito}
         />
       )}
+
       {pagina === 'detalhe' && produto && (
         <DetalheProduto
           key={produto.id}
           produto={produto}
-          onVoltar={() => abrirCatalogo(categoria, modelo, pesquisa)}
+          onVoltar={() =>
+            abrirCatalogo(categoria, modelo, pesquisa)
+          }
           onSacola={adicionarSacola}
           favorito={favoritos.includes(produto.id)}
           onFavorito={() => alternarFavorito(produto.id)}
         />
       )}
+
       <Footer />
+
       <NavegacaoMobile
         onInicio={() => navegar('inicio')}
         onCatalogo={() => abrirCatalogo()}
         onBusca={() => abrirCatalogo()}
       />
+
+      {/* Painel lateral da sacola, com os itens do cliente */}
       {sacolaAberta && (
-        <div className="overlay-sacola" onClick={() => setSacolaAberta(false)}>
+        <div
+          className="overlay-sacola"
+          onClick={() => setSacolaAberta(false)}
+        >
           <aside
             className="painel-sacola"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(evento) => evento.stopPropagation()}
             aria-label="Sacola de produtos"
           >
             <div className="painel-topo">
               <h2>
-                <ShoppingBag size={22} /> Minha sacola ({quantidadeSacola})
+                <ShoppingBag size={22} />
+                Minha sacola ({quantidadeSacola})
               </h2>
-              <button onClick={() => setSacolaAberta(false)} aria-label="Fechar">
+              <button
+                onClick={() => setSacolaAberta(false)}
+                aria-label="Fechar"
+              >
                 <X />
               </button>
             </div>
+
             <p className="aviso-sacola">
-              Monte sua lista e envie os produtos pelo WhatsApp. Não há pagamento neste
-              site.
+              Monte sua lista e envie os produtos pelo WhatsApp.
+              Não há pagamento neste site.
             </p>
+
             {sacola.length === 0 ? (
               <div className="sacola-vazia">
                 <ShoppingBag size={45} />
@@ -211,7 +298,7 @@ export default function App() {
             ) : (
               <>
                 <div className="itens-sacola">
-                  {sacola.map((item, i) => (
+                  {sacola.map((item, indice) => (
                     <div
                       className="item-sacola"
                       key={item.produto.id + '-' + item.modelo}
@@ -219,15 +306,24 @@ export default function App() {
                       <div>
                         <strong>{item.produto.nome}</strong>
                         <small>
-                          {item.modelo || 'Acessório geral'} · {item.quantidade}{' '}
-                          unidade(s)
+                          {item.modelo || 'Acessório geral'} ·{' '}
+                          {item.quantidade} unidade(s)
                         </small>
-                        <b>{moeda(item.produto.preco * item.quantidade)}</b>
+                        <b>
+                          {moeda(
+                            item.produto.preco * item.quantidade,
+                          )}
+                        </b>
                       </div>
+
                       <button
                         aria-label="Remover produto"
                         onClick={() =>
-                          setSacola((atual) => atual.filter((_, indice) => indice !== i))
+                          setSacola((atual) =>
+                            atual.filter(
+                              (_, posicao) => posicao !== indice,
+                            ),
+                          )
                         }
                       >
                         <Trash2 size={18} />
@@ -235,8 +331,10 @@ export default function App() {
                     </div>
                   ))}
                 </div>
+
                 <div className="sacola-rodape">
                   <strong>Total: {moeda(totalSacola)}</strong>
+
                   {linkSacola ? (
                     <a
                       className="btn btn-whatsapp"
@@ -244,7 +342,8 @@ export default function App() {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <MessageCircle /> Enviar lista no WhatsApp
+                      <MessageCircle />
+                      Enviar lista no WhatsApp
                     </a>
                   ) : (
                     <button className="btn btn-whatsapp" disabled>
