@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 
 import type { Produto } from '../types/produto';
+import { obterUrlImagem } from '../utils/imagemProduto';
 
 type Props = {
   produto: Produto;
@@ -17,11 +18,12 @@ type Props = {
 // Fotos reais cadastradas no admin têm prioridade.
 // Produtos fictícios recebem uma ilustração para o catálogo não ficar vazio.
 export function ImagemProduto({ produto, grande = false }: Props) {
-  if (/^https?:\/\//.test(produto.imagem)) {
+  const urlImagem = obterUrlImagem(produto.imagem || '');
+  if (urlImagem) {
     return (
       <img
         className="produto-foto"
-        src={produto.imagem}
+        src={urlImagem}
         alt={produto.nome}
         loading={grande ? 'eager' : 'lazy'}
       />
