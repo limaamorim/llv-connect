@@ -148,7 +148,10 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
       <main className="container admin-wrap">
         <section className="admin-panel admin-configuracao">
           <h1>Conecte o Supabase</h1>
-          <p>Configure VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY para acessar o painel com login.</p>
+          <p>
+            Configure VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY para acessar o
+            painel com login.
+          </p>
           <button className="btn btn-primary" onClick={onInicio}>
             Voltar à loja
           </button>

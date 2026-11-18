@@ -205,7 +205,6 @@ export default function App() {
         </p>
       )}
 
-
       {carregandoCatalogo && (
         <p className="container estado-catalogo" role="status">
           Carregando produtos e categorias...
