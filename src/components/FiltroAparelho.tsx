@@ -3,6 +3,7 @@ import { ArrowRight, Search, Smartphone } from 'lucide-react';
 
 import { aparelhos as modelosExemplo } from '../data/produtos';
 import type { Produto } from '../types/produto';
+import { catalogoConfigurado } from '../services/catalogoService';
 
 type Props = {
   onSelecionar: (modelo: string) => void;
