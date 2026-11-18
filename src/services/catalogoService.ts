@@ -43,9 +43,7 @@ async function consultar<T>(caminho: string, signal?: AbortSignal): Promise<T> {
 
 // O PostgREST geralmente limita cada resposta a 1.000 registros.
 // Por isso buscamos em páginas de 500, sem cortar produtos da vitrine.
-export async function buscarProdutosPublicos(
-  signal?: AbortSignal,
-): Promise<Produto[]> {
+export async function buscarProdutosPublicos(signal?: AbortSignal): Promise<Produto[]> {
   if (!catalogoConfigurado) return produtosExemplo;
 
   const produtos: Produto[] = [];
@@ -82,13 +80,7 @@ export async function buscarCategoriasPublicas(
   signal?: AbortSignal,
 ): Promise<CategoriaPublica[]> {
   if (!catalogoConfigurado) {
-    const nomes = [
-      'Capinhas',
-      'Películas',
-      'Carregadores',
-      'Fones',
-      'Acessórios',
-    ];
+    const nomes = ['Capinhas', 'Películas', 'Carregadores', 'Fones', 'Acessórios'];
 
     return nomes.map((nome, indice) => ({
       id: indice + 1,
