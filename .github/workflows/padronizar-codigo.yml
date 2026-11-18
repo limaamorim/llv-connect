@@ -1,0 +1,38 @@
+name: Padronizar codigo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  formatar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar formatador
+        run: npm install --no-save --no-package-lock prettier@3.6.2
+
+      - name: Formatar React, TypeScript e CSS
+        run: npx prettier --write "src/**/*.{ts,tsx,css}" "index.html"
+
+      - name: Salvar formatacao no GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "style: aplicar formatacao padrao automaticamente"
+            git push
+          fi
