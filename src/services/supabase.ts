@@ -60,6 +60,11 @@ export async function listarCategorias(): Promise<CategoriaLoja[]> {
 export async function salvarCategoria(nome: string) {
   return requisicao('/rest/v1/categorias', { method: 'POST', body: JSON.stringify({ nome: nome.trim() }) }, true);
 }
+export async function editarCategoria(id: number, nome: string) {
+  return requisicao('/rest/v1/categorias?id=eq.' + id, {
+    method: 'PATCH', body: JSON.stringify({ nome: nome.trim() }),
+  }, true);
+}
 export async function excluirCategoria(id: number) {
   return requisicao('/rest/v1/categorias?id=eq.' + id, { method: 'DELETE' }, true);
 }
