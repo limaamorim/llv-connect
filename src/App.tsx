@@ -9,9 +9,10 @@ import { Catalogo } from './pages/Catalogo';
 import { DetalheProduto } from './pages/DetalheProduto';
 import { Admin } from './pages/Admin';
 
-import { produtos as exemplos } from './data/produtos';
+import { buscarProdutosPublicos, buscarCategoriasPublicas, catalogoConfigurado } from './services/catalogoService';
+import type { CategoriaPublica } from './services/catalogoService';
 import { loja } from './data/loja';
-import { configurado, listarProdutos } from './services/supabase';
+
 import { moeda } from './utils/whatsapp';
 import type { Produto } from './types/produto';
 
@@ -37,7 +38,9 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>(
     location.pathname.startsWith('/admin') ? 'admin' : 'inicio',
   );
-  const [produtos, setProdutos] = useState<Produto[]>(configurado ? [] : exemplos);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [categoriasLoja, setCategoriasLoja] = useState<CategoriaPublica[]>([]);
+  const [carregandoCatalogo, setCarregandoCatalogo] = useState(true);
   const [produto, setProduto] = useState<Produto | null>(null);
   const [categoria, setCategoria] = useState('');
   const [modelo, setModelo] = useState('');
@@ -47,13 +50,36 @@ export default function App() {
   const [sacolaAberta, setSacolaAberta] = useState(false);
   const [erro, setErro] = useState('');
 
-  // Atualiza a lista quando o cliente abre uma página pública.
+  // Consulta apenas os dados públicos; o painel admin não participa.
   useEffect(() => {
     if (pagina === 'admin') return;
 
-    listarProdutos()
-      .then(setProdutos)
-      .catch((erro) => setErro(erro.message));
+    const controlador = new AbortController();
+    setCarregandoCatalogo(true);
+    setErro('');
+
+    Promise.all([
+      buscarProdutosPublicos(controlador.signal),
+      buscarCategoriasPublicas(controlador.signal),
+    ])
+      .then(([listaProdutos, listaCategorias]) => {
+        if (controlador.signal.aborted) return;
+        setProdutos(listaProdutos);
+        setCategoriasLoja(listaCategorias);
+      })
+      .catch((falha: unknown) => {
+        if (controlador.signal.aborted) return;
+        setErro(
+          falha instanceof Error
+            ? falha.message
+            : 'Não foi possível consultar o catálogo.',
+        );
+      })
+      .finally(() => {
+        if (!controlador.signal.aborted) setCarregandoCatalogo(false);
+      });
+
+    return () => controlador.abort();
   }, [pagina]);
 
   // Permite usar o botão Voltar do navegador.
@@ -175,16 +201,23 @@ export default function App() {
         </p>
       )}
 
-      {!configurado && (
+      {!catalogoConfigurado && (
         <div className="demo-notice">
           Vitrine demonstrativa: produtos e preços fictícios.
         </div>
+      )}
+
+      {carregandoCatalogo && (
+        <p className="container estado-catalogo" role="status">
+          Carregando produtos e categorias...
+        </p>
       )}
 
       {/* Exibe apenas a página selecionada */}
       {pagina === 'inicio' && (
         <Inicio
           produtos={produtos}
+          categorias={categoriasLoja}
           onCatalogo={abrirCatalogo}
           onAbrir={abrirProduto}
           favoritos={favoritos}
@@ -196,6 +229,7 @@ export default function App() {
         <Catalogo
           key={[categoria, modelo, pesquisa].join('|')}
           produtos={produtos}
+          categoriasLoja={categoriasLoja}
           categoriaInicial={categoria}
           modeloInicial={modelo}
           pesquisaInicial={pesquisa}
