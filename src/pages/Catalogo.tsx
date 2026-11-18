@@ -35,10 +35,14 @@ export function Catalogo({produtos,categoriaInicial,modeloInicial,pesquisaInicia
  function alternar(valor:string,lista:string[],atualizar:(l:string[])=>void){atualizar(lista.includes(valor)?lista.filter(i=>i!==valor):[...lista,valor]);}
  function limpar(){setBusca('');setCategorias([]);setMarcas([]);setModelo('');setOrdem('relevancia');}
  const filtrosAtivos=categorias.length+marcas.length+(modelo?1:0);
+ // Sugestões úteis enquanto o cliente digita, como na referência.
+ const sugestoes=busca.trim().length>=2
+   ? produtos.filter(p=>(p.nome+' '+p.modelos.join(' ')).toLowerCase().includes(busca.trim().toLowerCase())).slice(0,4)
+   : [];
  return <main className="container catalog-page catalogo-novo">
   <p className="breadcrumbs">Início <span>/</span> Produtos</p>
   <div className="titulo-catalogo"><div><span className="eyebrow">CATÁLOGO LLV CONNECT</span><h1>Encontre seu acessório ideal.</h1><p>Capinhas, películas, fones e tudo para o seu celular.</p></div><span className="total-encontrados">{encontrados.length} produtos</span></div>
-  <div className="catalogo-barra"><div className="search-field pesquisa-catalogo"><Search size={20}/><input type="search" value={busca} onChange={e=>setBusca(e.target.value)} placeholder="Busque produtos, marcas ou modelos..." aria-label="Buscar produtos"/>{busca&&<button onClick={()=>setBusca('')} aria-label="Apagar busca"><X size={18}/></button>}</div><button className="abrir-filtros" onClick={()=>setFiltrosAbertos(true)}><SlidersHorizontal size={17}/> Filtrar {filtrosAtivos>0&&<b>{filtrosAtivos}</b>}</button></div>
+  <div className="catalogo-barra"><div className="pesquisa-grupo"><div className="search-field pesquisa-catalogo"><Search size={20}/><input type="search" value={busca} onChange={e=>setBusca(e.target.value)} placeholder="Busque produtos, marcas ou modelos..." aria-label="Buscar produtos"/>{busca&&<button onClick={()=>setBusca('')} aria-label="Apagar busca"><X size={18}/></button>}</div>{sugestoes.length>0&&<div className="sugestoes-produto"><small>PRODUTOS ENCONTRADOS</small>{sugestoes.map(p=><button key={p.id} onClick={()=>onAbrir(p)}><Search size={14}/><span>{p.nome}</span><strong>Ver produto</strong></button>)}</div>}</div><button className="abrir-filtros" onClick={()=>setFiltrosAbertos(true)}><SlidersHorizontal size={17}/> Filtrar {filtrosAtivos>0&&<b>{filtrosAtivos}</b>}</button></div>
   <div className="catalog-layout">
     {filtrosAbertos&&<button className="filtro-fundo" aria-label="Fechar filtros" onClick={()=>setFiltrosAbertos(false)}/>}
     <aside className={'filters filtros-novos '+(filtrosAbertos?'filtros-visiveis':'')}>
