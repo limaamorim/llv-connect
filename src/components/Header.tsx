@@ -9,6 +9,7 @@ type Props = {
   onBuscar: (busca: string) => void;
   onSacola: () => void;
   quantidade: number;
+  categorias: string[];
 };
 
 export function Header({
@@ -18,6 +19,7 @@ export function Header({
   onBuscar,
   onSacola,
   quantidade,
+  categorias,
 }: Props) {
   const [aberto, setAberto] = useState(false);
   const [busca, setBusca] = useState('');
@@ -70,30 +72,18 @@ export function Header({
           >
             Produtos
           </button>
-          <button
-            onClick={() => {
-              onCategoria('Capinhas');
-              setAberto(false);
-            }}
-          >
-            Capinhas
-          </button>
-          <button
-            onClick={() => {
-              onCategoria('Películas');
-              setAberto(false);
-            }}
-          >
-            Películas
-          </button>
-          <button
-            onClick={() => {
-              onCategoria('Fones');
-              setAberto(false);
-            }}
-          >
-            Fones
-          </button>
+          {/* Mostra as categorias cadastradas no banco (até três no menu). */}
+          {categorias.slice(0, 3).map((categoria) => (
+            <button
+              key={categoria}
+              onClick={() => {
+                onCategoria(categoria);
+                setAberto(false);
+              }}
+            >
+              {categoria}
+            </button>
+          ))}
         </nav>
 
         <div className="header-lateral">
