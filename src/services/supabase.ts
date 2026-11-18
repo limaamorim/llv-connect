@@ -50,7 +50,9 @@ function salvarSessao(dados: {
 
 export function temSessao() {
   const sessao = lerSessao();
-  return Boolean(sessao?.access_token && (sessao.expires_at > Date.now() || sessao.refresh_token));
+  return Boolean(
+    sessao?.access_token && (sessao.expires_at > Date.now() || sessao.refresh_token),
+  );
 }
 
 export function sair() {
@@ -74,17 +76,14 @@ export async function obterTokenAdministrador(): Promise<string> {
     throw new Error('Sua sessão terminou. Faça login novamente.');
   }
 
-  const resposta = await fetch(
-    url + '/auth/v1/token?grant_type=refresh_token',
-    {
-      method: 'POST',
-      headers: {
-        apikey: chave,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh_token: sessao.refresh_token }),
+  const resposta = await fetch(url + '/auth/v1/token?grant_type=refresh_token', {
+    method: 'POST',
+    headers: {
+      apikey: chave,
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({ refresh_token: sessao.refresh_token }),
+  });
 
   if (!resposta.ok) {
     sair();
@@ -96,11 +95,7 @@ export async function obterTokenAdministrador(): Promise<string> {
   return renovada.access_token;
 }
 
-async function requisicao(
-  caminho: string,
-  opcoes: RequestInit = {},
-  privado = false,
-) {
+async function requisicao(caminho: string, opcoes: RequestInit = {}, privado = false) {
   if (!configurado) {
     throw new Error('Configure o Supabase no arquivo .env.local.');
   }
@@ -206,17 +201,10 @@ export async function editarCategoria(id: number, nome: string) {
 export async function excluirCategoria(id: number) {
   if (!configurado) return demo.excluirCategoria(id);
 
-  return requisicao(
-    '/rest/v1/categorias?id=eq.' + id,
-    { method: 'DELETE' },
-    true,
-  );
+  return requisicao('/rest/v1/categorias?id=eq.' + id, { method: 'DELETE' }, true);
 }
 
-export async function salvarProduto(
-  produto: Omit<Produto, 'id'>,
-  id?: number,
-) {
+export async function salvarProduto(produto: Omit<Produto, 'id'>, id?: number) {
   if (!configurado) return demo.salvarProduto(produto, id);
 
   return requisicao(
@@ -232,21 +220,13 @@ export async function salvarProduto(
 export async function excluirProduto(id: number) {
   if (!configurado) return demo.excluirProduto(id);
 
-  return requisicao(
-    '/rest/v1/produtos?id=eq.' + id,
-    { method: 'DELETE' },
-    true,
-  );
+  return requisicao('/rest/v1/produtos?id=eq.' + id, { method: 'DELETE' }, true);
 }
 
 export async function listarVendas(): Promise<Venda[]> {
   if (!configurado) return demo.vendas();
 
-  return requisicao(
-    '/rest/v1/vendas?select=*&order=criada_em.desc',
-    {},
-    true,
-  );
+  return requisicao('/rest/v1/vendas?select=*&order=criada_em.desc', {}, true);
 }
 
 export async function registrarVenda(

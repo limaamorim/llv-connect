@@ -33,19 +33,16 @@ export async function enviarImagem(file: File): Promise<string> {
   // Gera um nome único para evitar substituir fotos antigas.
   const nome = `${crypto.randomUUID()}.${extensao}`;
 
-  const resposta = await fetch(
-    `${url}/storage/v1/object/produtos/${nome}`,
-    {
-      method: 'POST',
-      headers: {
-        apikey: chave,
-        Authorization: `Bearer ${token}`,
-        'Content-Type': file.type,
-        'x-upsert': 'false',
-      },
-      body: file,
+  const resposta = await fetch(`${url}/storage/v1/object/produtos/${nome}`, {
+    method: 'POST',
+    headers: {
+      apikey: chave,
+      Authorization: `Bearer ${token}`,
+      'Content-Type': file.type,
+      'x-upsert': 'false',
     },
-  );
+    body: file,
+  });
 
   if (!resposta.ok) {
     const erro = await resposta.json().catch(() => ({}));
