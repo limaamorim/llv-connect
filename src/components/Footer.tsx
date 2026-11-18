@@ -1,11 +1,4 @@
-import {
-  Instagram,
-  MapPin,
-  MessageCircle,
-  ShieldCheck,
-  Truck,
-  Zap,
-} from 'lucide-react';
+import { Instagram, MapPin, MessageCircle, ShieldCheck, Truck, Zap } from 'lucide-react';
 
 import { loja } from '../data/loja';
 
@@ -33,9 +26,7 @@ export function Footer() {
           <h3 className="rodape-logo">
             LLV <span>CONNECT</span>
           </h3>
-          <p>
-            Mais que acessórios, conexões para o seu dia a dia.
-          </p>
+          <p>Mais que acessórios, conexões para o seu dia a dia.</p>
         </div>
 
         <div>
@@ -47,20 +38,12 @@ export function Footer() {
         <div>
           <h4>Fale com a LLV Connect</h4>
 
-          <a
-            href={loja.instagram}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={loja.instagram} target="_blank" rel="noreferrer">
             <Instagram size={17} /> @llvconnect
           </a>
 
           {loja.whatsapp ? (
-            <a
-              href={`https://wa.me/${loja.whatsapp}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={`https://wa.me/${loja.whatsapp}`} target="_blank" rel="noreferrer">
               <MessageCircle size={17} />
               WhatsApp
             </a>
@@ -75,11 +58,7 @@ export function Footer() {
             <p>
               <MapPin size={17} />
               {loja.mapa ? (
-                <a
-                  href={loja.mapa}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={loja.mapa} target="_blank" rel="noreferrer">
                   {loja.endereco}
                 </a>
               ) : (
@@ -91,8 +70,8 @@ export function Footer() {
       </div>
 
       <div className="container footer-bottom">
-        © {new Date().getFullYear()} LLV Connect.
-        Produtos e valores demonstrativos até o cadastro oficial.
+        © {new Date().getFullYear()} LLV Connect. Produtos e valores demonstrativos até o
+        cadastro oficial.
       </div>
     </footer>
   );

@@ -33,11 +33,7 @@ export function ImagemProduto({ produto, grande = false }: Props) {
   // Desenho de capinha feito com CSS.
   if (/capinha|case/.test(nome)) {
     return (
-      <div
-        className={
-          `produto-ilustracao case-illustration ${grande ? 'grande' : ''}`
-        }
-      >
+      <div className={`produto-ilustracao case-illustration ${grande ? 'grande' : ''}`}>
         <div className="case-body">
           <div className="camera-plate">
             <i />
@@ -55,17 +51,11 @@ export function ImagemProduto({ produto, grande = false }: Props) {
     return (
       <div className="produto-ilustracao pelicula-illustration">
         <div className="glass-phone">
-          <Smartphone
-            size={grande ? 125 : 82}
-            strokeWidth={1.1}
-          />
+          <Smartphone size={grande ? 125 : 82} strokeWidth={1.1} />
           <span />
         </div>
 
-        <Shield
-          size={grande ? 47 : 31}
-          strokeWidth={1.3}
-        />
+        <Shield size={grande ? 47 : 31} strokeWidth={1.3} />
       </div>
     );
   }
@@ -84,10 +74,7 @@ export function ImagemProduto({ produto, grande = false }: Props) {
   return (
     <div className="produto-ilustracao accessory-illustration">
       <div className="accessory-circle">
-        <Icone
-          size={grande ? 135 : 81}
-          strokeWidth={1.25}
-        />
+        <Icone size={grande ? 135 : 81} strokeWidth={1.25} />
       </div>
     </div>
   );

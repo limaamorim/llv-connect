@@ -9,10 +9,7 @@ type Props = {
   produtos?: Produto[];
 };
 
-export function FiltroAparelho({
-  onSelecionar,
-  produtos = [],
-}: Props) {
+export function FiltroAparelho({ onSelecionar, produtos = [] }: Props) {
   const [busca, setBusca] = useState('');
   const [marca, setMarca] = useState('Apple');
   const [modelo, setModelo] = useState('');
@@ -20,9 +17,7 @@ export function FiltroAparelho({
   // Reúne os aparelhos dos exemplos e dos produtos cadastrados.
   const todosModelos = [
     ...new Set([
-      ...Object.values(modelosExemplo).flatMap((linhas) =>
-        Object.values(linhas).flat(),
-      ),
+      ...Object.values(modelosExemplo).flatMap((linhas) => Object.values(linhas).flat()),
       ...produtos.flatMap((produto) => produto.modelos || []),
     ]),
   ];
@@ -38,15 +33,11 @@ export function FiltroAparelho({
     return 'Outros';
   }
 
-  const modelosDaMarca = todosModelos.filter(
-    (nome) => marcaDoModelo(nome) === marca,
-  );
+  const modelosDaMarca = todosModelos.filter((nome) => marcaDoModelo(nome) === marca);
 
   const sugestoes = busca.trim()
     ? todosModelos
-        .filter((nome) =>
-          nome.toLowerCase().includes(busca.toLowerCase()),
-        )
+        .filter((nome) => nome.toLowerCase().includes(busca.toLowerCase()))
         .slice(0, 6)
     : [];
 
