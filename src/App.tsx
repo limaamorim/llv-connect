@@ -21,7 +21,7 @@ export default function App() {
   const [erro, setErro] = useState('');
 
   useEffect(() => {
-    if (pagina === 'admin' || !configurado) return;
+    if (pagina === 'admin') return;
     listarProdutos().then(setProdutos).catch(e => setErro(e.message));
   }, [pagina]);
 
