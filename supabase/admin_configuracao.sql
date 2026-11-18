@@ -31,6 +31,16 @@ create policy "llv_admin_ver_proprio_acesso"
 on public.administradores for select to authenticated
 using (user_id = (select auth.uid()));
 
+-- Administradores autenticados também precisam de SELECT para
+-- editar/excluir categorias com segurança (PostgREST exige acesso à linha).
+drop policy if exists "llv_admin_ler_categorias" on public.categorias;
+create policy "llv_admin_ler_categorias"
+on public.categorias for select to authenticated
+using (exists(
+  select 1 from public.administradores
+  where user_id = (select auth.uid())
+));
+
 -- As políticas abaixo só permitem escrita para UID cadastrado na tabela.
 drop policy if exists "llv_admin_criar_categoria" on public.categorias;
 create policy "llv_admin_criar_categoria" on public.categorias
