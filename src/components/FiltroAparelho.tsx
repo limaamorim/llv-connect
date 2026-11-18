@@ -18,7 +18,11 @@ export function FiltroAparelho({ onSelecionar, produtos = [] }: Props) {
   // Reúne os aparelhos dos exemplos e dos produtos cadastrados.
   const todosModelos = [
     ...new Set([
-      ...Object.values(modelosExemplo).flatMap((linhas) => Object.values(linhas).flat()),
+      ...(catalogoConfigurado
+        ? []
+        : Object.values(modelosExemplo).flatMap((linhas) =>
+            Object.values(linhas).flat(),
+          )),
       ...produtos.flatMap((produto) => produto.modelos || []),
     ]),
   ];
