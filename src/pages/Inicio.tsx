@@ -14,16 +14,18 @@ import {
 import { CardProduto } from '../components/CardProduto';
 import { FiltroAparelho } from '../components/FiltroAparelho';
 import type { Produto } from '../types/produto';
+import type { CategoriaPublica } from '../services/catalogoService';
 
 type Props = {
   produtos: Produto[];
+  categorias: CategoriaPublica[];
   onCatalogo: (categoria?: string, modelo?: string, busca?: string) => void;
   onAbrir: (produto: Produto) => void;
   favoritos: number[];
   onFavorito: (id: number) => void;
 };
 
-const categorias = [
+const categoriasVisuais = [
   { nome: 'Capinhas', Icone: Smartphone },
   { nome: 'Películas', Icone: ShieldCheck },
   { nome: 'Carregadores', Icone: PlugZap },
@@ -32,7 +34,19 @@ const categorias = [
   { nome: 'Acessórios', Icone: LayoutGrid },
 ];
 
-export function Inicio({ produtos, onCatalogo, onAbrir, favoritos, onFavorito }: Props) {
+export function Inicio({
+  produtos,
+  categorias,
+  onCatalogo,
+  onAbrir,
+  favoritos,
+  onFavorito,
+}: Props) {
+  // As categorias reais vêm da tabela categorias do Supabase.
+  const categoriasExibidas = categorias.map(({ nome }) => ({
+    nome,
+    Icone: categoriasVisuais.find((item) => item.nome === nome)?.Icone || LayoutGrid,
+  }));
   return (
     <main>
       {/* Banner principal da loja */}
@@ -127,11 +141,11 @@ export function Inicio({ produtos, onCatalogo, onAbrir, favoritos, onFavorito }:
         </div>
 
         <div className="categorias-vitrine">
-          {categorias.map(({ nome, Icone }) => (
+          {categoriasExibidas.map(({ nome, Icone }) => (
             <button
               key={nome}
               className="categoria-vitrine"
-              onClick={() => onCatalogo(nome === 'Cabos' ? 'Carregadores' : nome)}
+              onClick={() => onCatalogo(nome)}
             >
               <span>
                 <Icone size={34} strokeWidth={1.5} />
