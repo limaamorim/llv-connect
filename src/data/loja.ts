@@ -1,9 +1,9 @@
-// Altere estes dados quando receber as informações oficiais da LLV Connect.
-// Não use o telefone pessoal do desenvolvedor como contato da loja.
+// Contato temporário autorizado para apresentar a vitrine ao cliente.
+// Substitua pelo telefone oficial assim que o cliente confirmar.
 export const loja = {
   nome: 'LLV Connect',
   instagram: 'https://www.instagram.com/llvconnect/',
-  whatsapp: '', // Exemplo: '5581999999999' (somente números, com DDI 55).
-  endereco: '', // Endereço real, se a loja autorizar a publicação.
-  mapa: '', // Link do Google Maps, quando informado.
+  whatsapp: '5581998129437',
+  endereco: '',
+  mapa: '',
 };
