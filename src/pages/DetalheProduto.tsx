@@ -57,10 +57,7 @@ export function DetalheProduto({
         {/* Foto principal e miniaturas */}
         <div className="galeria-produto">
           <div className="detail-picture">
-            <ImagemProduto
-              produto={{ ...produto, imagem: fotos[fotoAtiva] }}
-              grande
-            />
+            <ImagemProduto produto={{ ...produto, imagem: fotos[fotoAtiva] }} grande />
           </div>
 
           <div className="miniaturas">
@@ -78,9 +75,7 @@ export function DetalheProduto({
         <div className="detail-info">
           <div className="titulo-detalhe">
             <div>
-              <span className="product-category">
-                {produto.categoria.toUpperCase()}
-              </span>
+              <span className="product-category">{produto.categoria.toUpperCase()}</span>
               <h1>{produto.nome}</h1>
               <p className="codigo-produto">
                 Código: LLV-{String(produto.id).padStart(3, '0')}
@@ -92,18 +87,13 @@ export function DetalheProduto({
               aria-label={favorito ? 'Remover favorito' : 'Favoritar'}
               onClick={onFavorito}
             >
-              <Heart
-                size={20}
-                fill={favorito ? 'currentColor' : 'none'}
-              />
+              <Heart size={20} fill={favorito ? 'currentColor' : 'none'} />
             </button>
           </div>
 
           <strong className="detail-price">{moeda(produto.preco)}</strong>
 
-          <span
-            className={`estoque-selo ${!disponivel ? 'sem-estoque' : ''}`}
-          >
+          <span className={`estoque-selo ${!disponivel ? 'sem-estoque' : ''}`}>
             {disponivel ? '● Em estoque' : 'Indisponível'}
           </span>
 
@@ -127,9 +117,7 @@ export function DetalheProduto({
           {/* Produtos específicos exigem que o cliente escolha o celular */}
           {precisaModelo ? (
             <div className="model-selector">
-              <label htmlFor="modelo-produto">
-                Escolha o modelo compatível
-              </label>
+              <label htmlFor="modelo-produto">Escolha o modelo compatível</label>
               <select
                 id="modelo-produto"
                 value={modelo}
@@ -172,10 +160,7 @@ export function DetalheProduto({
               <strong>{quantidade}</strong>
 
               <button
-                disabled={
-                  produto.estoque !== undefined &&
-                  quantidade >= produto.estoque
-                }
+                disabled={produto.estoque !== undefined && quantidade >= produto.estoque}
                 aria-label="Aumentar"
                 onClick={() => setQuantidade((atual) => atual + 1)}
               >
@@ -219,15 +204,13 @@ export function DetalheProduto({
 
           {!whatsapp && (
             <p className="setup-note">
-              O número oficial do WhatsApp será configurado pela loja
-              em src/data/loja.ts.
+              O número oficial do WhatsApp será configurado pela loja em src/data/loja.ts.
             </p>
           )}
 
           <div className="seguranca-produto">
-            <ShieldCheck size={17} />
-            O pedido será confirmado com a LLV Connect,
-            sem pagamento pelo site.
+            <ShieldCheck size={17} />O pedido será confirmado com a LLV Connect, sem
+            pagamento pelo site.
           </div>
         </div>
       </div>
