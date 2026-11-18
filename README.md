@@ -1,5 +1,92 @@
 # LLV Connect — Catálogo e painel administrativo
 
+## Conectar a vitrine pública ao Supabase (sem administrador)
+
+A primeira integração é **somente leitura**: o site mostra os produtos do banco para qualquer cliente, sem login. O painel `/admin` não precisa ser configurado agora.
+
+### 1. Criar as tabelas e o armazenamento
+
+1. Crie um projeto no [Supabase](https://supabase.com).
+2. Entre em **SQL Editor > New query**.
+3. Cole e execute o arquivo `supabase/catalogo_publico.sql` deste repositório.
+4. Ele prepara as tabelas públicas `categorias` e `produtos`, as permissões de leitura e um bucket público de imagens chamado `produtos`.
+5. Se você já executou `supabase/schema.sql` anteriormente, os dados existentes são preservados.
+
+**Segurança:** o cliente só consulta produtos ativos e seus campos públicos. Preço de custo, usuários e histórico de vendas não são consultados nem liberados ao público.
+
+### 2. Configurar o arquivo .env.local
+
+Na raiz do projeto, crie `.env.local`:
+
+```dotenv
+VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLICAVEL
+```
+
+Use **Project URL** e **Publishable key** nas configurações de API do seu projeto Supabase. A chave pública pode aparecer no frontend; **nunca** coloque `service_role`, `sb_secret_...` ou senhas no projeto.
+
+Reinicie o Vite depois de criar/alterar o arquivo:
+
+```bash
+npm install
+npm run dev
+```
+
+### 3. Cadastrar produtos diretamente no Supabase
+
+Por enquanto, acesse **Table Editor > produtos > Insert row** e preencha:
+
+| Coluna | Exemplo | Observação |
+| --- | --- | --- |
+| `nome` | Capinha Transparente | Nome do produto |
+| `categoria` | Capinhas | Deve existir em `categorias` |
+| `preco` | 29.90 | Use ponto no valor numérico |
+| `estoque` | 10 | Quantidade disponível |
+| `descricao` | Proteção para seu celular | Texto exibido nos detalhes |
+| `imagem` | storage:capinha.jpg | Veja o passo seguinte |
+| `modelos` | ["iPhone 12 Pro","iPhone 13"] | JSON array de modelos compatíveis |
+| `destaque` | true | Exibe na página inicial |
+| `novidade` | false | Mostra selo de novidade |
+| `ativo` | true | Aparece no catálogo público |
+| `custo` | 0 | Campo interno, nunca mostrado ao cliente |
+
+**Produto universal:** informe `[]` em `modelos` (por exemplo, um fone Bluetooth genérico). O catálogo mostra esses itens mesmo quando o cliente seleciona um modelo de celular.
+
+**Categorias novas:** crie primeiro a categoria na tabela `categorias`, depois use o nome exato na coluna `categoria` do produto.
+
+### 4. Adicionar fotos
+
+No Supabase, abra **Storage > produtos** e envie uma foto chamada, por exemplo, `capinha.jpg`. Na coluna `imagem` da tabela `produtos`, escreva `storage:capinha.jpg`.
+
+Também é possível colocar a URL pública completa da imagem na coluna `imagem`. Para fotos em pastas, use `storage:pasta/foto.jpg`.
+
+O bucket é público: não coloque nele documentos privados ou imagens sensíveis.
+
+### 5. Publicar no Netlify
+
+No site do Netlify, configure as duas variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` em **Environment variables** e faça um novo deploy. As variáveis do Vite são lidas durante a compilação; criar apenas o `.env.local` no seu computador não configura o Netlify.
+
+### O que já funciona
+
+- A página inicial lê categorias e produtos com `destaque = true`.
+- O catálogo lê produtos ativos, preços, descrição, estoque e imagens.
+- Os filtros por categoria e modelo usam os dados reais do Supabase.
+- Busca, favoritos, sacola e WhatsApp continuam no frontend.
+- Se o banco estiver configurado e sem produtos, a vitrine fica vazia: os exemplos locais **não** serão misturados.
+- Se não houver credenciais, continua o modo de demonstração com dados locais.
+
+**Atenção:** o número oficial de WhatsApp continua em `src/data/loja.ts` e ainda precisa ser informado. Não há pagamento nem registro automático de vendas no site.
+
+### Arquivos principais da integração
+
+- `src/services/catalogoService.ts`: consulta somente os produtos e categorias públicos.
+- `src/utils/imagemProduto.ts`: transforma `storage:foto.jpg` em URL de foto pública.
+- `src/App.tsx`: carrega os dados e os envia para as páginas.
+- `src/pages/Inicio.tsx` e `src/pages/Catalogo.tsx`: usam categorias, preços e produtos reais.
+- `supabase/catalogo_publico.sql`: prepara as tabelas e permissões necessárias.
+
+---
+
 Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os arquivos e nomes das funções foram escritos em português sempre que possível.
 
 ## Como executar
