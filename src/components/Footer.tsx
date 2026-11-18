@@ -70,8 +70,7 @@ export function Footer() {
       </div>
 
       <div className="container footer-bottom">
-        © {new Date().getFullYear()} LLV Connect. Produtos e valores demonstrativos até o
-        cadastro oficial.
+        © {new Date().getFullYear()} LLV Connect. Todos os direitos reservados.
       </div>
     </footer>
   );
