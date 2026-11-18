@@ -9,7 +9,11 @@ import { Catalogo } from './pages/Catalogo';
 import { DetalheProduto } from './pages/DetalheProduto';
 import { Admin } from './pages/Admin';
 
-import { buscarProdutosPublicos, buscarCategoriasPublicas, catalogoConfigurado } from './services/catalogoService';
+import {
+  buscarProdutosPublicos,
+  buscarCategoriasPublicas,
+  catalogoConfigurado,
+} from './services/catalogoService';
 import type { CategoriaPublica } from './services/catalogoService';
 import { loja } from './data/loja';
 

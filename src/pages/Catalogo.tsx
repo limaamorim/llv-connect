@@ -55,9 +55,7 @@ export function Catalogo({
     ...new Set([
       ...(catalogoConfigurado
         ? []
-        : Object.values(aparelhos).flatMap((linhas) =>
-            Object.values(linhas).flat(),
-          )),
+        : Object.values(aparelhos).flatMap((linhas) => Object.values(linhas).flat())),
       ...produtos.flatMap((produto) => produto.modelos || []),
     ]),
   ];
