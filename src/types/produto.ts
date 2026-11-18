@@ -1,15 +1,16 @@
-// Tipos definem o formato dos dados. Assim o TypeScript ajuda a evitar erros.
-export type Categoria = 'Capinhas' | 'Películas' | 'Carregadores' | 'Fones' | 'Acessórios';
-
+// Tipos compartilhados pelo catálogo e pelo painel administrativo.
+export type Categoria = string;
 export type Produto = {
   id: number;
   nome: string;
   preco: number;
+  custo?: number;
+  estoque?: number;
+  ativo?: boolean;
   categoria: Categoria;
   descricao: string;
-  imagem: string; // Imagem ilustrativa por enquanto: emoji.
+  imagem: string; // Pode ser uma URL de foto ou emoji nos exemplos.
   destaque?: boolean;
   novidade?: boolean;
-  // Array vazio significa produto universal, que não precisa de seleção de modelo.
-  modelos: string[];
+  modelos: string[]; // Vazio = produto universal.
 };

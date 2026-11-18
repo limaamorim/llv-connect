@@ -1,59 +1,52 @@
-# LLV Connect — catálogo de acessórios para celular
+# LLV Connect — Catálogo e painel administrativo
 
-Site inicial em **React + TypeScript + Vite**. Criado para ser simples de entender e modificar.
+Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os arquivos e nomes das funções foram escritos em português sempre que possível.
 
-## O que já funciona
+## Como executar
 
-- Página inicial responsiva com identidade azul e preto.
-- Navegação por **categoria** e por **marca → linha → modelo**.
-- Catálogo com busca e filtros; acessórios universais não dependem de aparelho.
-- Página de detalhes com seleção de modelo e valor.
-- Link de WhatsApp com mensagem de compra preenchida (após configuração do número).
+1. Instale o Node.js.
+2. Abra a pasta e execute `npm install`.
+3. Execute `npm run dev`.
+4. Para conferir a versão de produção: `npm run build`.
 
-## Começar no computador
+## Configurar Supabase (obrigatório para o painel)
 
-Instale Node.js (versão LTS). No terminal, dentro da pasta do projeto:
+1. Crie um projeto em https://supabase.com.
+2. No SQL Editor, execute o conteúdo de `supabase/schema.sql`.
+3. Copie `.env.example` para `.env.local`.
+4. Configure `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` com a URL e a chave **publicável/anon**. **Nunca coloque service_role no frontend**.
+5. Em Authentication > Users crie um usuário para o administrador (com senha forte).
+6. Copie o UUID desse usuário e execute no SQL Editor:
+   `insert into public.administradores(user_id) values ('UUID-AQUI');`
+7. Reinicie o servidor `npm run dev` e acesse **/admin**.
 
-```bash
-npm install
-npm run dev
-```
+**Atenção:** sem Supabase, o catálogo apresenta produtos fictícios somente para demonstração e o painel não permite alterações. Assim, nenhuma venda será armazenada por engano no navegador. O login só libera usuários inseridos na tabela de administradores.
 
-Abra o endereço que aparecer no terminal (geralmente `http://localhost:5173`). Para gerar a versão de produção: `npm run build`.
+## O que cada pasta faz
 
-## Onde editar
+- `src/components`: peças reutilizáveis do visual, como a busca e os cards.
+- `src/pages`: as páginas Início, Catálogo, Detalhe e Admin.
+- `src/services/supabase.ts`: acesso ao banco e login.
+- `src/types`: formato dos dados no TypeScript.
+- `src/data`: aparelhos de referência e dados demonstrativos.
+- `src/utils`: funções auxiliares, como moeda e WhatsApp.
+- `supabase/schema.sql`: tabelas, segurança e função de registrar venda.
 
-| Arquivo | O que faz |
-| --- | --- |
-| `src/App.tsx` | Controla a página exibida: início, catálogo ou detalhe. |
-| `src/data/loja.ts` | WhatsApp, Instagram e localização da loja. |
-| `src/data/produtos.ts` | Produtos e modelos **de exemplo**. |
-| `src/pages/Inicio.tsx` | Banner, categorias e destaques. |
-| `src/pages/Catalogo.tsx` | Lista produtos e aplica filtros. |
-| `src/pages/DetalheProduto.tsx` | Detalhe, preço e comprar pelo WhatsApp. |
-| `src/components/` | Partes reaproveitáveis do site. |
-| `src/utils/whatsapp.ts` | Formatação de preço e link para WhatsApp. |
-| `src/styles.css` | Cores e estilos do site. |
+## Uso da loja
 
-## Configurar o WhatsApp da loja
+- Em /admin, cadastre categorias e produtos (nome, preço, custo, estoque e foto por URL).
+- Informe modelos compatíveis separados por vírgula. Deixe vazio para itens universais.
+- Vendas feitas pelo WhatsApp precisam ser **registradas manualmente** em Vendas.
+- Ao registrar a venda, o Supabase reduz o estoque de forma atômica.
+- O dashboard calcula faturamento e lucro **bruto** (vendas menos custo dos produtos). Não desconta impostos ou despesas.
+- Produtos com vendas registradas não podem ser apagados; desative-os em vez disso.
 
-Edite `src/data/loja.ts` e preencha `whatsapp` com **o telefone oficial da loja**, apenas números e com DDI. Ex.: `5581999999999`. Enquanto estiver vazio, o botão de compra fica desativado: não direciona o cliente ao número errado.
+## Observações
 
-## Importante antes de publicar
-
-**Todos os produtos e preços são fictícios.** Substitua-os pelos dados e fotos autorizadas da loja. Confirme compatibilidade de capinhas e películas modelo a modelo. Use a logo oficial em arquivo de boa qualidade.
-
-Este é um **MVP frontend**, sem painel administrativo, banco de dados, pagamentos ou controle de estoque real. Essas funções podem ser acrescentadas depois usando Supabase. A mensagem do WhatsApp não confirma pedido nem disponibilidade.
-
-## Publicar no Netlify
-
-Crie um site importando o repositório GitHub. Comando de build: `npm run build`. Pasta de publicação: `dist`. O arquivo `netlify.toml` já inclui essas configurações.
-
-## Próxima etapa
-
-1. Inserir logo e fotos reais.
-2. Confirmar número, endereço e Instagram.
-3. Criar cadastro de produtos e autenticação de administrador no Supabase.
-4. Salvar modelos, variações e compatibilidades no banco.
-
-> O projeto propositalmente usa navegação simples com `useState` em vez de adicionar bibliotecas de rotas antes de serem necessárias.
+- Configure o WhatsApp oficial em `src/data/loja.ts`; não use telefone pessoal.
+- **Detectar aparelho automaticamente** não foi adicionado: navegadores modernos não oferecem identificação confiável de modelo. Há uma dica para encontrar o modelo nas configurações do celular.
+- Estoque é por produto, não por cor/modelo. Para controlar variações individualmente, será necessária uma próxima melhoria.
+- As imagens podem ser URLs públicas; upload para Storage não foi incluído nesta versão inicial.
+- O filtro de aparelhos exibe modelos de referência e modelos dos produtos cadastrados; só mostra como compatíveis aqueles vinculados ao produto.
+- No Netlify, cadastre as mesmas variáveis `VITE_...` em Environment Variables. O arquivo `netlify.toml` já contém o redirecionamento SPA.
+- Nunca publique `.env.local` ou senhas no GitHub.
