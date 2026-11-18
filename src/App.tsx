@@ -37,9 +37,7 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>(
     location.pathname.startsWith('/admin') ? 'admin' : 'inicio',
   );
-  const [produtos, setProdutos] = useState<Produto[]>(
-    configurado ? [] : exemplos,
-  );
+  const [produtos, setProdutos] = useState<Produto[]>(configurado ? [] : exemplos);
   const [produto, setProduto] = useState<Produto | null>(null);
   const [categoria, setCategoria] = useState('');
   const [modelo, setModelo] = useState('');
@@ -61,9 +59,7 @@ export default function App() {
   // Permite usar o botão Voltar do navegador.
   useEffect(() => {
     const voltar = () => {
-      setPagina(
-        location.pathname.startsWith('/admin') ? 'admin' : 'inicio',
-      );
+      setPagina(location.pathname.startsWith('/admin') ? 'admin' : 'inicio');
     };
 
     addEventListener('popstate', voltar);
@@ -73,19 +69,11 @@ export default function App() {
 
   function navegar(novaPagina: Pagina) {
     setPagina(novaPagina);
-    history.pushState(
-      {},
-      '',
-      novaPagina === 'admin' ? '/admin' : '/',
-    );
+    history.pushState({}, '', novaPagina === 'admin' ? '/admin' : '/');
     window.scrollTo(0, 0);
   }
 
-  function abrirCatalogo(
-    categoriaNova = '',
-    modeloNovo = '',
-    buscaNova = '',
-  ) {
+  function abrirCatalogo(categoriaNova = '', modeloNovo = '', buscaNova = '') {
     setCategoria(categoriaNova);
     setModelo(modeloNovo);
     setPesquisa(buscaNova);
@@ -103,32 +91,21 @@ export default function App() {
         ? anteriores.filter((item) => item !== id)
         : [...anteriores, id];
 
-      localStorage.setItem(
-        'llv-favoritos',
-        JSON.stringify(atualizados),
-      );
+      localStorage.setItem('llv-favoritos', JSON.stringify(atualizados));
 
       return atualizados;
     });
   }
 
-  function adicionarSacola(
-    item: Produto,
-    modeloSelecionado: string,
-    quantidade: number,
-  ) {
+  function adicionarSacola(item: Produto, modeloSelecionado: string, quantidade: number) {
     setSacola((lista) => {
       const indice = lista.findIndex(
         (selecionado) =>
-          selecionado.produto.id === item.id &&
-          selecionado.modelo === modeloSelecionado,
+          selecionado.produto.id === item.id && selecionado.modelo === modeloSelecionado,
       );
 
       if (indice < 0) {
-        return [
-          ...lista,
-          { produto: item, modelo: modeloSelecionado, quantidade },
-        ];
+        return [...lista, { produto: item, modelo: modeloSelecionado, quantidade }];
       }
 
       return lista.map((selecionado, posicao) =>
@@ -144,10 +121,7 @@ export default function App() {
     setSacolaAberta(true);
   }
 
-  const quantidadeSacola = sacola.reduce(
-    (total, item) => total + item.quantidade,
-    0,
-  );
+  const quantidadeSacola = sacola.reduce((total, item) => total + item.quantidade, 0);
 
   const textoSacola = sacola
     .map(
@@ -235,9 +209,7 @@ export default function App() {
         <DetalheProduto
           key={produto.id}
           produto={produto}
-          onVoltar={() =>
-            abrirCatalogo(categoria, modelo, pesquisa)
-          }
+          onVoltar={() => abrirCatalogo(categoria, modelo, pesquisa)}
           onSacola={adicionarSacola}
           favorito={favoritos.includes(produto.id)}
           onFavorito={() => alternarFavorito(produto.id)}
@@ -254,10 +226,7 @@ export default function App() {
 
       {/* Painel lateral da sacola, com os itens do cliente */}
       {sacolaAberta && (
-        <div
-          className="overlay-sacola"
-          onClick={() => setSacolaAberta(false)}
-        >
+        <div className="overlay-sacola" onClick={() => setSacolaAberta(false)}>
           <aside
             className="painel-sacola"
             onClick={(evento) => evento.stopPropagation()}
@@ -268,17 +237,14 @@ export default function App() {
                 <ShoppingBag size={22} />
                 Minha sacola ({quantidadeSacola})
               </h2>
-              <button
-                onClick={() => setSacolaAberta(false)}
-                aria-label="Fechar"
-              >
+              <button onClick={() => setSacolaAberta(false)} aria-label="Fechar">
                 <X />
               </button>
             </div>
 
             <p className="aviso-sacola">
-              Monte sua lista e envie os produtos pelo WhatsApp.
-              Não há pagamento neste site.
+              Monte sua lista e envie os produtos pelo WhatsApp. Não há pagamento neste
+              site.
             </p>
 
             {sacola.length === 0 ? (
@@ -306,23 +272,17 @@ export default function App() {
                       <div>
                         <strong>{item.produto.nome}</strong>
                         <small>
-                          {item.modelo || 'Acessório geral'} ·{' '}
-                          {item.quantidade} unidade(s)
+                          {item.modelo || 'Acessório geral'} · {item.quantidade}{' '}
+                          unidade(s)
                         </small>
-                        <b>
-                          {moeda(
-                            item.produto.preco * item.quantidade,
-                          )}
-                        </b>
+                        <b>{moeda(item.produto.preco * item.quantidade)}</b>
                       </div>
 
                       <button
                         aria-label="Remover produto"
                         onClick={() =>
                           setSacola((atual) =>
-                            atual.filter(
-                              (_, posicao) => posicao !== indice,
-                            ),
+                            atual.filter((_, posicao) => posicao !== indice),
                           )
                         }
                       >
