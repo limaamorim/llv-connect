@@ -1,3 +1,4 @@
+import { demo } from './demo';
 import type { Produto } from '../types/produto';
 
 // Conexão com o Supabase sem bibliotecas adicionais.
@@ -50,25 +51,31 @@ export async function entrar(email: string, senha: string) {
 }
 
 export async function listarProdutos(admin = false): Promise<Produto[]> {
+  if (!configurado) return demo.produtos(admin);
   const colunas = admin ? '*' : 'id,nome,descricao,categoria,preco,estoque,imagem,modelos,destaque,novidade,ativo';
   const filtro = admin ? '' : '&ativo=eq.true';
   return requisicao('/rest/v1/produtos?select=' + colunas + '&order=id.desc' + filtro, {}, admin);
 }
 export async function listarCategorias(): Promise<CategoriaLoja[]> {
+  if (!configurado) return demo.categorias();
   return requisicao('/rest/v1/categorias?select=*&order=nome.asc');
 }
 export async function salvarCategoria(nome: string) {
+  if (!configurado) return demo.salvarCategoria(nome);
   return requisicao('/rest/v1/categorias', { method: 'POST', body: JSON.stringify({ nome: nome.trim() }) }, true);
 }
 export async function editarCategoria(id: number, nome: string) {
+  if (!configurado) return demo.editarCategoria(id, nome);
   return requisicao('/rest/v1/categorias?id=eq.' + id, {
     method: 'PATCH', body: JSON.stringify({ nome: nome.trim() }),
   }, true);
 }
 export async function excluirCategoria(id: number) {
+  if (!configurado) return demo.excluirCategoria(id);
   return requisicao('/rest/v1/categorias?id=eq.' + id, { method: 'DELETE' }, true);
 }
 export async function salvarProduto(produto: Omit<Produto, 'id'>, id?: number) {
+  if (!configurado) return demo.salvarProduto(produto, id);
   const caminho = '/rest/v1/produtos' + (id ? '?id=eq.' + id : '');
   return requisicao(caminho, {
     method: id ? 'PATCH' : 'POST',
@@ -76,12 +83,15 @@ export async function salvarProduto(produto: Omit<Produto, 'id'>, id?: number) {
   }, true);
 }
 export async function excluirProduto(id: number) {
+  if (!configurado) return demo.excluirProduto(id);
   return requisicao('/rest/v1/produtos?id=eq.' + id, { method: 'DELETE' }, true);
 }
 export async function listarVendas(): Promise<Venda[]> {
+  if (!configurado) return demo.vendas();
   return requisicao('/rest/v1/vendas?select=*&order=criada_em.desc', {}, true);
 }
 export async function registrarVenda(produtoId: number, quantidade: number, precoUnitario: number) {
+  if (!configurado) return demo.registrarVenda(produtoId, quantidade, precoUnitario);
   // Função SQL registra a venda e baixa o estoque numa mesma transação.
   return requisicao('/rest/v1/rpc/registrar_venda', {
     method: 'POST',
