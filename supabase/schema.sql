@@ -75,3 +75,8 @@ insert into public.categorias(nome) values ('Capinhas'),('Películas'),('Carrega
 
 -- Após criar o usuário no Authentication > Users, substitua pelo UUID real:
 -- insert into public.administradores(user_id) values ('UUID-DO-USUARIO');
+
+-- O catálogo público não deve expor o custo de compra (informação interna).
+-- Os admins autenticados podem consultar as colunas completas.
+revoke select on public.produtos from anon;
+grant select (id,nome,descricao,categoria,preco,estoque,imagem,modelos,destaque,novidade,ativo) on public.produtos to anon;
