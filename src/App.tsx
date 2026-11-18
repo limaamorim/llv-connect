@@ -197,6 +197,7 @@ export default function App() {
         onBuscar={(busca) => abrirCatalogo('', '', busca)}
         onSacola={() => setSacolaAberta(true)}
         quantidade={quantidadeSacola}
+        categorias={categoriasLoja.map((item) => item.nome)}
       />
 
       {erro && (
