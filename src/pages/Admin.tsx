@@ -6,9 +6,12 @@ import {
   LogOut,
   PackagePlus,
   ShoppingBag,
+  ImagePlus,
 } from 'lucide-react';
 import type { Produto } from '../types/produto';
 import { moeda } from '../utils/whatsapp';
+import { enviarImagem } from '../services/uploadImagem';
+import { obterUrlImagem } from '../utils/imagemProduto';
 import {
   configurado,
   entrar,
@@ -52,6 +55,8 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
   const [vendas, setVendas] = useState<Venda[]>([]);
   const [edicao, setEdicao] = useState<number | null>(null);
   const [formulario, setFormulario] = useState(vazio);
+  const [arquivoImagem, setArquivoImagem] = useState<File | null>(null);
+  const [previaImagem, setPreviaImagem] = useState('');
   const [nomeCategoria, setNomeCategoria] = useState('');
   const [vendaProduto, setVendaProduto] = useState('');
   const [quantidade, setQuantidade] = useState(1);
@@ -59,6 +64,34 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
   const [erro, setErro] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [carregando, setCarregando] = useState(false);
+
+  // Libera URLs temporárias de pré-visualização para evitar vazamento de memória.
+  useEffect(() => {
+    return () => {
+      if (previaImagem) URL.revokeObjectURL(previaImagem);
+    };
+  }, [previaImagem]);
+
+  function escolherImagem(arquivo?: File) {
+    if (!arquivo) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type)) {
+      setErro('Escolha um arquivo JPG, PNG ou WebP.');
+      return;
+    }
+    if (arquivo.size > 5 * 1024 * 1024) {
+      setErro('A foto deve ter no máximo 5 MB.');
+      return;
+    }
+
+    setErro('');
+    setArquivoImagem(arquivo);
+    setPreviaImagem(URL.createObjectURL(arquivo));
+  }
+
+  function limparImagem() {
+    setArquivoImagem(null);
+    setPreviaImagem('');
+  }
 
   const recarregar = useCallback(async () => {
     const [p, c, v] = await Promise.all([
@@ -93,6 +126,7 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
   }
 
   function editar(item: Produto) {
+    limparImagem();
     setEdicao(item.id);
     setFormulario({
       nome: item.nome,
@@ -270,12 +304,23 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
               onSubmit={(e) => {
                 e.preventDefault();
                 executar(
-                  () => salvarProduto(formulario, edicao || undefined),
+                  async () => {
+                    let imagem = formulario.imagem;
+                    if (arquivoImagem) {
+                      imagem = await enviarImagem(arquivoImagem);
+                    }
+
+                    await salvarProduto(
+                      { ...formulario, imagem },
+                      edicao || undefined,
+                    );
+                  },
                   'Produto salvo com sucesso.',
                 ).then((salvou) => {
                   if (salvou) {
                     setEdicao(null);
                     setFormulario(vazio);
+                    limparImagem();
                   }
                 });
               }}
@@ -355,16 +400,55 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
                   }
                 />
               </label>
-              <label>
-                Imagem (URL pública)
+              {/* O administrador escolhe uma foto do próprio dispositivo. */}
+              <div className="campo-imagem-admin">
+                <label htmlFor="foto-produto">
+                  Foto do produto
+                </label>
+                <label className="seletor-imagem-admin" htmlFor="foto-produto">
+                  <ImagePlus size={23} />
+                  <span>
+                    {arquivoImagem
+                      ? arquivoImagem.name
+                      : 'Selecionar foto do computador ou celular'}
+                  </span>
+                </label>
                 <input
-                  placeholder="https://..."
-                  value={formulario.imagem}
-                  onChange={(e) =>
-                    setFormulario({ ...formulario, imagem: e.target.value })
+                  id="foto-produto"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(evento) =>
+                    escolherImagem(evento.target.files?.[0])
                   }
                 />
-              </label>
+                <small>JPG, PNG ou WebP · até 5 MB.</small>
+
+                {(previaImagem || formulario.imagem) && (
+                  <div className="previa-imagem-admin">
+                    <img
+                      src={
+                        previaImagem ||
+                        obterUrlImagem(formulario.imagem) ||
+                        ''
+                      }
+                      alt="Prévia do produto"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => {
+                        limparImagem();
+                        setFormulario((anterior) => ({
+                          ...anterior,
+                          imagem: '',
+                        }));
+                      }}
+                    >
+                      Remover foto
+                    </button>
+                  </div>
+                )}
+              </div>
               <label>
                 Modelos compatíveis (separados por vírgula)
                 <textarea
@@ -426,6 +510,7 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
                   onClick={() => {
                     setEdicao(null);
                     setFormulario(vazio);
+                    limparImagem();
                   }}
                 >
                   Cancelar edição
