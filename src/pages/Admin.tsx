@@ -303,20 +303,14 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
               className="admin-form"
               onSubmit={(e) => {
                 e.preventDefault();
-                executar(
-                  async () => {
-                    let imagem = formulario.imagem;
-                    if (arquivoImagem) {
-                      imagem = await enviarImagem(arquivoImagem);
-                    }
+                executar(async () => {
+                  let imagem = formulario.imagem;
+                  if (arquivoImagem) {
+                    imagem = await enviarImagem(arquivoImagem);
+                  }
 
-                    await salvarProduto(
-                      { ...formulario, imagem },
-                      edicao || undefined,
-                    );
-                  },
-                  'Produto salvo com sucesso.',
-                ).then((salvou) => {
+                  await salvarProduto({ ...formulario, imagem }, edicao || undefined);
+                }, 'Produto salvo com sucesso.').then((salvou) => {
                   if (salvou) {
                     setEdicao(null);
                     setFormulario(vazio);
@@ -402,9 +396,7 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
               </label>
               {/* O administrador escolhe uma foto do próprio dispositivo. */}
               <div className="campo-imagem-admin">
-                <label htmlFor="foto-produto">
-                  Foto do produto
-                </label>
+                <label htmlFor="foto-produto">Foto do produto</label>
                 <label className="seletor-imagem-admin" htmlFor="foto-produto">
                   <ImagePlus size={23} />
                   <span>
@@ -417,20 +409,14 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
                   id="foto-produto"
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
-                  onChange={(evento) =>
-                    escolherImagem(evento.target.files?.[0])
-                  }
+                  onChange={(evento) => escolherImagem(evento.target.files?.[0])}
                 />
                 <small>JPG, PNG ou WebP · até 5 MB.</small>
 
                 {(previaImagem || formulario.imagem) && (
                   <div className="previa-imagem-admin">
                     <img
-                      src={
-                        previaImagem ||
-                        obterUrlImagem(formulario.imagem) ||
-                        ''
-                      }
+                      src={previaImagem || obterUrlImagem(formulario.imagem) || ''}
                       alt="Prévia do produto"
                     />
                     <button
