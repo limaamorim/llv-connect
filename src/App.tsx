@@ -12,6 +12,7 @@ import { Admin } from './pages/Admin';
 import {
   buscarProdutosPublicos,
   buscarCategoriasPublicas,
+  catalogoConfigurado,
 } from './services/catalogoService';
 import type { CategoriaPublica } from './services/catalogoService';
 import { loja } from './data/loja';
@@ -202,6 +203,12 @@ export default function App() {
       {erro && (
         <p className="container admin-erro">
           Não foi possível carregar o catálogo: {erro}
+        </p>
+      )}
+
+      {!catalogoConfigurado && (
+        <p className="container estado-catalogo" role="status">
+          Estamos preparando o catálogo. Os produtos estarão disponíveis em breve.
         </p>
       )}
 
