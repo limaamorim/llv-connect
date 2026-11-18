@@ -46,7 +46,7 @@ const vazio = {
 
 // Os campos do formulário usam o mesmo formato de Produto, sem o ID.
 export function Admin({ onInicio }: { onInicio: () => void }) {
-  const [autenticado, setAutenticado] = useState(!configurado || temSessao());
+  const [autenticado, setAutenticado] = useState(temSessao());
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [aba, setAba] = useState<Aba>('resumo');
@@ -143,6 +143,20 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
     });
   }
 
+  if (!configurado) {
+    return (
+      <main className="container admin-wrap">
+        <section className="admin-panel admin-configuracao">
+          <h1>Conecte o Supabase</h1>
+          <p>Configure VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY para acessar o painel com login.</p>
+          <button className="btn btn-primary" onClick={onInicio}>
+            Voltar à loja
+          </button>
+        </section>
+      </main>
+    );
+  }
+
   if (!autenticado)
     return (
       <main className="container admin-wrap">
@@ -220,12 +234,6 @@ export function Admin({ onInicio }: { onInicio: () => void }) {
           </button>
         )}
       </div>
-      {!configurado && (
-        <p className="admin-sucesso">
-          <strong>Modo demonstração:</strong> sem login e sem Supabase. As alterações
-          ficam apenas neste navegador e não são seguras para uso comercial.
-        </p>
-      )}
       <nav className="admin-tabs" aria-label="Menu administrativo">
         {(
           [
