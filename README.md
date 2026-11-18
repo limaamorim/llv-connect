@@ -9,7 +9,17 @@ Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os a
 3. Execute `npm run dev`.
 4. Para conferir a versão de produção: `npm run build`.
 
-## Configurar Supabase (obrigatório para o painel)
+## Testar o painel sem Supabase
+
+1. Execute `npm install` e `npm run dev`.
+2. Abra `http://localhost:5173/admin`.
+3. O painel abre automaticamente em **modo demonstração**, sem usuário ou senha.
+4. Teste produtos, categorias, dashboard e registro de vendas.
+5. Os dados ficam no `localStorage` deste navegador. Outros aparelhos não verão suas alterações; limpar os dados do navegador apaga as mudanças.
+
+**IMPORTANTE:** o modo demonstração é aberto a qualquer visitante e **não deve ser usado em produção com dados reais**. Para colocar a loja no ar, configure o Supabase e o login seguro conforme abaixo. As informações do modo demonstração não são migradas automaticamente para o Supabase.
+
+## Configurar Supabase (para uso real e login seguro)
 
 1. Crie um projeto em https://supabase.com.
 2. No SQL Editor, execute o conteúdo de `supabase/schema.sql`.
@@ -20,7 +30,7 @@ Projeto didático em **React + TypeScript**, com CSS organizado e Supabase. Os a
    `insert into public.administradores(user_id) values ('UUID-AQUI');`
 7. Reinicie o servidor `npm run dev` e acesse **/admin**.
 
-**Atenção:** sem Supabase, o catálogo apresenta produtos fictícios somente para demonstração e o painel não permite alterações. Assim, nenhuma venda será armazenada por engano no navegador. O login só libera usuários inseridos na tabela de administradores.
+**Atenção:** sem Supabase, o catálogo e o painel funcionam apenas como demonstração local. O login seguro só é exigido quando o Supabase está configurado.
 
 ## O que cada pasta faz
 
