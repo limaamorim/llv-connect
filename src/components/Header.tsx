@@ -54,19 +54,44 @@ export function Header({
 
         {/* Menu de categorias e páginas */}
         <nav className={`nav-nova ${aberto ? 'menu-aberto' : ''}`}>
-          <button onClick={() => { onInicio(); setAberto(false); }}>
+          <button
+            onClick={() => {
+              onInicio();
+              setAberto(false);
+            }}
+          >
             Início
           </button>
-          <button onClick={() => { onCatalogo(); setAberto(false); }}>
+          <button
+            onClick={() => {
+              onCatalogo();
+              setAberto(false);
+            }}
+          >
             Produtos
           </button>
-          <button onClick={() => { onCategoria('Capinhas'); setAberto(false); }}>
+          <button
+            onClick={() => {
+              onCategoria('Capinhas');
+              setAberto(false);
+            }}
+          >
             Capinhas
           </button>
-          <button onClick={() => { onCategoria('Películas'); setAberto(false); }}>
+          <button
+            onClick={() => {
+              onCategoria('Películas');
+              setAberto(false);
+            }}
+          >
             Películas
           </button>
-          <button onClick={() => { onCategoria('Fones'); setAberto(false); }}>
+          <button
+            onClick={() => {
+              onCategoria('Fones');
+              setAberto(false);
+            }}
+          >
             Fones
           </button>
         </nav>

@@ -32,44 +32,29 @@ const categorias = [
   { nome: 'Acessórios', Icone: LayoutGrid },
 ];
 
-export function Inicio({
-  produtos,
-  onCatalogo,
-  onAbrir,
-  favoritos,
-  onFavorito,
-}: Props) {
+export function Inicio({ produtos, onCatalogo, onAbrir, favoritos, onFavorito }: Props) {
   return (
     <main>
       {/* Banner principal da loja */}
       <section className="hero hero-vitrine">
         <div className="container hero-vitrine-inner">
           <div className="hero-copy">
-            <span className="etiqueta-hero">
-              CONEXÃO, ESTILO E PROTEÇÃO
-            </span>
+            <span className="etiqueta-hero">CONEXÃO, ESTILO E PROTEÇÃO</span>
 
             <h1>
               Tecnologia que <span>te conecta.</span>
             </h1>
 
             <p>
-              Acessórios para deixar o seu dia a dia mais prático,
-              moderno e conectado.
+              Acessórios para deixar o seu dia a dia mais prático, moderno e conectado.
             </p>
 
             <div className="hero-botoes">
-              <button
-                className="btn btn-primary"
-                onClick={() => onCatalogo()}
-              >
+              <button className="btn btn-primary" onClick={() => onCatalogo()}>
                 Ver produtos <ArrowRight size={18} />
               </button>
 
-              <button
-                className="btn hero-outline"
-                onClick={() => onCatalogo('Capinhas')}
-              >
+              <button className="btn hero-outline" onClick={() => onCatalogo('Capinhas')}>
                 Conhecer capinhas
               </button>
             </div>
@@ -146,9 +131,7 @@ export function Inicio({
             <button
               key={nome}
               className="categoria-vitrine"
-              onClick={() =>
-                onCatalogo(nome === 'Cabos' ? 'Carregadores' : nome)
-              }
+              onClick={() => onCatalogo(nome === 'Cabos' ? 'Carregadores' : nome)}
             >
               <span>
                 <Icone size={34} strokeWidth={1.5} />
@@ -199,10 +182,7 @@ export function Inicio({
           <h2>O acessório certo faz a diferença.</h2>
           <p>Encontre proteção, praticidade e estilo em um só lugar.</p>
 
-          <button
-            className="btn btn-primary"
-            onClick={() => onCatalogo()}
-          >
+          <button className="btn btn-primary" onClick={() => onCatalogo()}>
             Explorar agora <ArrowRight size={17} />
           </button>
         </div>

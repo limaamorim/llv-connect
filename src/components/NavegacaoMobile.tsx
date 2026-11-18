@@ -7,20 +7,11 @@ type Props = {
   onBusca: () => void;
 };
 
-export function NavegacaoMobile({
-  onInicio,
-  onCatalogo,
-  onBusca,
-}: Props) {
-  const contato = loja.whatsapp
-    ? `https://wa.me/${loja.whatsapp}`
-    : loja.instagram;
+export function NavegacaoMobile({ onInicio, onCatalogo, onBusca }: Props) {
+  const contato = loja.whatsapp ? `https://wa.me/${loja.whatsapp}` : loja.instagram;
 
   return (
-    <nav
-      className="navegacao-mobile"
-      aria-label="Navegação do celular"
-    >
+    <nav className="navegacao-mobile" aria-label="Navegação do celular">
       <button onClick={onInicio}>
         <Home size={20} />
         Início

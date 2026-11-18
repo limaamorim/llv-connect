@@ -56,20 +56,12 @@ export function Catalogo({
 
   const todosModelos = [
     ...new Set([
-      ...Object.values(aparelhos).flatMap((linhas) =>
-        Object.values(linhas).flat(),
-      ),
+      ...Object.values(aparelhos).flatMap((linhas) => Object.values(linhas).flat()),
       ...produtos.flatMap((produto) => produto.modelos || []),
     ]),
   ];
 
-  const marcasDisponiveis = [
-    'Apple',
-    'Samsung',
-    'Motorola',
-    'Xiaomi',
-    'Outros',
-  ];
+  const marcasDisponiveis = ['Apple', 'Samsung', 'Motorola', 'Xiaomi', 'Outros'];
 
   // Filtra e ordena apenas quando os valores relevantes mudarem.
   const encontrados = useMemo(() => {
@@ -81,21 +73,19 @@ export function Catalogo({
         produto.categoria,
         produto.descricao,
         ...produto.modelos,
-      ].join(' ').toLocaleLowerCase('pt-BR');
+      ]
+        .join(' ')
+        .toLocaleLowerCase('pt-BR');
 
       const bateBusca = !termo || descricao.includes(termo);
       const bateCategoria =
         categorias.length === 0 || categorias.includes(produto.categoria);
       const bateModelo =
-        !modelo ||
-        produto.modelos.length === 0 ||
-        produto.modelos.includes(modelo);
+        !modelo || produto.modelos.length === 0 || produto.modelos.includes(modelo);
       const bateMarca =
         marcas.length === 0 ||
         produto.modelos.length === 0 ||
-        produto.modelos.some((item) =>
-          marcas.includes(identificarMarca(item)),
-        );
+        produto.modelos.some((item) => marcas.includes(identificarMarca(item)));
 
       return bateBusca && bateCategoria && bateModelo && bateMarca;
     });
@@ -117,9 +107,7 @@ export function Catalogo({
     atualizar: (valores: string[]) => void,
   ) {
     atualizar(
-      lista.includes(valor)
-        ? lista.filter((item) => item !== valor)
-        : [...lista, valor],
+      lista.includes(valor) ? lista.filter((item) => item !== valor) : [...lista, valor],
     );
   }
 
@@ -131,19 +119,19 @@ export function Catalogo({
     setOrdem('relevancia');
   }
 
-  const filtrosAtivos =
-    categorias.length + marcas.length + (modelo ? 1 : 0);
+  const filtrosAtivos = categorias.length + marcas.length + (modelo ? 1 : 0);
 
   // Mostra sugestões de produtos enquanto o cliente digita.
-  const sugestoes = busca.trim().length >= 2
-    ? produtos
-        .filter((produto) =>
-          (produto.nome + ' ' + produto.modelos.join(' '))
-            .toLowerCase()
-            .includes(busca.trim().toLowerCase()),
-        )
-        .slice(0, 4)
-    : [];
+  const sugestoes =
+    busca.trim().length >= 2
+      ? produtos
+          .filter((produto) =>
+            (produto.nome + ' ' + produto.modelos.join(' '))
+              .toLowerCase()
+              .includes(busca.trim().toLowerCase()),
+          )
+          .slice(0, 4)
+      : [];
 
   return (
     <main className="container catalog-page catalogo-novo">
@@ -159,9 +147,7 @@ export function Catalogo({
           <p>Capinhas, películas, fones e tudo para o seu celular.</p>
         </div>
 
-        <span className="total-encontrados">
-          {encontrados.length} produtos
-        </span>
+        <span className="total-encontrados">{encontrados.length} produtos</span>
       </div>
 
       {/* Campo de pesquisa e botão de filtros para celular */}
@@ -178,10 +164,7 @@ export function Catalogo({
             />
 
             {busca && (
-              <button
-                onClick={() => setBusca('')}
-                aria-label="Apagar busca"
-              >
+              <button onClick={() => setBusca('')} aria-label="Apagar busca">
                 <X size={18} />
               </button>
             )}
@@ -192,10 +175,7 @@ export function Catalogo({
               <small>PRODUTOS ENCONTRADOS</small>
 
               {sugestoes.map((produto) => (
-                <button
-                  key={produto.id}
-                  onClick={() => onAbrir(produto)}
-                >
+                <button key={produto.id} onClick={() => onAbrir(produto)}>
                   <Search size={14} />
                   <span>{produto.nome}</span>
                   <strong>Ver produto</strong>
@@ -205,10 +185,7 @@ export function Catalogo({
           )}
         </div>
 
-        <button
-          className="abrir-filtros"
-          onClick={() => setFiltrosAbertos(true)}
-        >
+        <button className="abrir-filtros" onClick={() => setFiltrosAbertos(true)}>
           <SlidersHorizontal size={17} />
           Filtrar
           {filtrosAtivos > 0 && <b>{filtrosAtivos}</b>}
@@ -227,9 +204,7 @@ export function Catalogo({
 
         {/* Barra de filtros: lateral no computador e painel no celular */}
         <aside
-          className={
-            `filters filtros-novos ${filtrosAbertos ? 'filtros-visiveis' : ''}`
-          }
+          className={`filters filtros-novos ${filtrosAbertos ? 'filtros-visiveis' : ''}`}
         >
           <div className="filtro-cabecalho">
             <h3>
@@ -255,9 +230,7 @@ export function Catalogo({
                 <input
                   type="checkbox"
                   checked={categorias.includes(categoria)}
-                  onChange={() =>
-                    alternar(categoria, categorias, setCategorias)
-                  }
+                  onChange={() => alternar(categoria, categorias, setCategorias)}
                 />
                 <span>
                   {categoria}{' '}
@@ -301,8 +274,7 @@ export function Catalogo({
               {todosModelos
                 .filter(
                   (item) =>
-                    marcas.length === 0 ||
-                    marcas.includes(identificarMarca(item)),
+                    marcas.length === 0 || marcas.includes(identificarMarca(item)),
                 )
                 .map((item) => (
                   <option key={item} value={item}>
@@ -312,8 +284,7 @@ export function Catalogo({
             </select>
 
             <p className="ajuda-filtro">
-              Produtos gerais também aparecem quando você escolhe
-              um aparelho.
+              Produtos gerais também aparecem quando você escolhe um aparelho.
             </p>
           </div>
 
@@ -330,15 +301,13 @@ export function Catalogo({
           <div className="resultado-topo">
             <span>
               {busca ? `Resultados para “${busca}”` : 'Todos os produtos'}
-              {' · '}{encontrados.length} encontrados
+              {' · '}
+              {encontrados.length} encontrados
             </span>
 
             <label>
               Ordenar
-              <select
-                value={ordem}
-                onChange={(evento) => setOrdem(evento.target.value)}
-              >
+              <select value={ordem} onChange={(evento) => setOrdem(evento.target.value)}>
                 <option value="relevancia">Mais relevantes</option>
                 <option value="menor">Menor preço</option>
                 <option value="maior">Maior preço</option>
@@ -349,10 +318,9 @@ export function Catalogo({
 
           {(filtrosAtivos > 0 || busca) && (
             <div className="filtros-ativos">
-              {[...categorias, ...marcas, ...(modelo ? [modelo] : [])]
-                .map((filtro) => (
-                  <span key={filtro}>{filtro}</span>
-                ))}
+              {[...categorias, ...marcas, ...(modelo ? [modelo] : [])].map((filtro) => (
+                <span key={filtro}>{filtro}</span>
+              ))}
 
               <button onClick={limpar}>
                 Limpar filtros <X size={13} />
@@ -386,9 +354,7 @@ export function Catalogo({
           <div className="chamada-catalogo">
             <div>
               <h3>Acessórios para todas as conexões.</h3>
-              <p>
-                Explore nossa seleção e encontre o que combina com você.
-              </p>
+              <p>Explore nossa seleção e encontre o que combina com você.</p>
             </div>
             <span aria-hidden="true">LLV</span>
           </div>

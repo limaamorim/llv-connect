@@ -10,12 +10,7 @@ type Props = {
   onFavorito?: (id: number) => void;
 };
 
-export function CardProduto({
-  produto,
-  onAbrir,
-  favorito = false,
-  onFavorito,
-}: Props) {
+export function CardProduto({ produto, onAbrir, favorito = false, onFavorito }: Props) {
   // Se o estoque não foi informado, mantemos o item disponível.
   const disponivel = produto.estoque === undefined || produto.estoque > 0;
 
@@ -29,9 +24,7 @@ export function CardProduto({
       >
         <div className="product-picture">
           <ImagemProduto produto={produto} />
-          {produto.novidade && (
-            <span className="product-badge">Novidade</span>
-          )}
+          {produto.novidade && <span className="product-badge">Novidade</span>}
         </div>
 
         <div className="product-info">
@@ -39,9 +32,7 @@ export function CardProduto({
           <strong>{produto.nome}</strong>
           <span className="product-price">{moeda(produto.preco)}</span>
 
-          <span
-            className={`estoque-selo ${!disponivel ? 'sem-estoque' : ''}`}
-          >
+          <span className={`estoque-selo ${!disponivel ? 'sem-estoque' : ''}`}>
             {disponivel ? '● Disponível' : 'Indisponível'}
           </span>
 
@@ -54,16 +45,11 @@ export function CardProduto({
       {/* Favoritos são salvos pelo componente App */}
       <button
         className={`favorito-btn ${favorito ? 'ativo' : ''}`}
-        aria-label={
-          favorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos'
-        }
+        aria-label={favorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
         aria-pressed={favorito}
         onClick={() => onFavorito?.(produto.id)}
       >
-        <Heart
-          size={19}
-          fill={favorito ? 'currentColor' : 'none'}
-        />
+        <Heart size={19} fill={favorito ? 'currentColor' : 'none'} />
       </button>
     </article>
   );
