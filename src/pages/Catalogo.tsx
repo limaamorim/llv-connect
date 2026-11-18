@@ -4,9 +4,12 @@ import { Search, SlidersHorizontal, X, Check, ChevronDown } from 'lucide-react';
 import { CardProduto } from '../components/CardProduto';
 import { aparelhos } from '../data/produtos';
 import type { Produto } from '../types/produto';
+import type { CategoriaPublica } from '../services/catalogoService';
+import { catalogoConfigurado } from '../services/catalogoService';
 
 type Props = {
   produtos: Produto[];
+  categoriasLoja: CategoriaPublica[];
   categoriaInicial: string;
   modeloInicial: string;
   pesquisaInicial: string;
@@ -26,6 +29,7 @@ function identificarMarca(modelo: string) {
 
 export function Catalogo({
   produtos,
+  categoriasLoja,
   categoriaInicial,
   modeloInicial,
   pesquisaInicial,
@@ -43,20 +47,17 @@ export function Catalogo({
   const [ordem, setOrdem] = useState('relevancia');
 
   // Listas usadas para montar os filtros.
-  const categoriasDisponiveis = [
-    ...new Set([
-      ...produtos.map((produto) => produto.categoria),
-      'Capinhas',
-      'Películas',
-      'Carregadores',
-      'Fones',
-      'Acessórios',
-    ]),
-  ];
+  // As categorias são cadastradas no banco, não definidas no JSX.
+  const categoriasDisponiveis = categoriasLoja.map((item) => item.nome);
 
+  // Quando o Supabase estiver conectado, só oferecemos modelos cadastrados.
   const todosModelos = [
     ...new Set([
-      ...Object.values(aparelhos).flatMap((linhas) => Object.values(linhas).flat()),
+      ...(catalogoConfigurado
+        ? []
+        : Object.values(aparelhos).flatMap((linhas) =>
+            Object.values(linhas).flat(),
+          )),
       ...produtos.flatMap((produto) => produto.modelos || []),
     ]),
   ];
