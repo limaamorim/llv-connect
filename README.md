@@ -81,3 +81,20 @@ Favoritos ficam neste navegador. A sacola é temporária (perde os itens quando 
 **Fotografias:** as imagens de referência serviram como inspiração de layout, e não foram copiadas. Os produtos demonstrativos usam ilustrações CSS até que a loja cadastre fotos reais. A página de detalhes exibe uma miniatura enquanto o cadastro tiver somente uma imagem.
 
 Não foram alterados o painel administrativo, o banco de dados nem os registros existentes.
+
+
+## Formatação e organização do código
+
+O projeto usa **Prettier** para manter os arquivos simples de estudar. Padrão: 2 espaços de indentação, até 90 caracteres por linha quando possível, aspas simples e JSX com tags separadas.
+
+Depois de baixar o projeto com `git pull origin main`, execute:
+
+```bash
+npm run format
+```
+
+O comando organiza todos os arquivos `.ts`, `.tsx`, `.css` e `index.html` **sem alterar a lógica**. Para verificar a formatação sem modificar arquivos: `npm run format:check`.
+
+No VS Code, instale a extensão **Prettier - Code formatter** (esbenp.prettier-vscode). A pasta `.vscode` já contém a configuração para formatar ao salvar (`Ctrl+S`). Se não puder instalar a extensão, use `npm run format` pelo terminal.
+
+O arquivo `.prettierrc.json` guarda o padrão. A rotina do GitHub Actions em `.github/workflows/padronizar-codigo.yml` também tenta formatar e registrar as alterações ao receber um push na branch `main`, se as Actions e permissões de escrita estiverem habilitadas no repositório.
