@@ -333,3 +333,14 @@ button{font-family:inherit}
  .painel-sacola{padding:18px}
 }
 @media(max-width:380px){.hero-vitrine .hero-copy{max-width:200px}.hero-vitrine .hero-copy h1{font-size:29px}.hero-produtos{right:-97px}.header-lateral{gap:0}.brand-nova small{font-size:8px}.produto-clicavel .product-price{font-size:17px}}
+
+
+/* Sugestões durante a digitação na busca do catálogo */
+.pesquisa-grupo{position:relative;flex:1;min-width:0}
+.pesquisa-grupo .pesquisa-catalogo{width:100%}
+.sugestoes-produto{position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:20;background:white;border:1px solid #dce6f2;border-radius:11px;box-shadow:0 14px 35px #0c294522;padding:10px;max-height:285px;overflow:auto}
+.sugestoes-produto>small{display:block;color:#8a9ab0;font-size:10px;letter-spacing:1px;font-weight:800;padding:5px 9px 10px}
+.sugestoes-produto button{width:100%;display:flex;gap:10px;align-items:center;border:0;border-bottom:1px solid #eff2f6;padding:11px 9px;background:white;text-align:left;color:#233854;font-size:12px}
+.sugestoes-produto button:hover{background:#f2f7ff}
+.sugestoes-produto button span{flex:1}
+.sugestoes-produto button strong{color:#0879f9;font-size:11px}
