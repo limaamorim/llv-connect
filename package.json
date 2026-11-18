@@ -3,7 +3,23 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {"dev": "vite", "build": "tsc -b && vite build", "preview": "vite preview"},
-  "dependencies": {"lucide-react": "^0.468.0", "react": "^18.3.1", "react-dom": "^18.3.1"},
-  "devDependencies": {"@types/react": "^18.3.18", "@types/react-dom": "^18.3.5", "@vitejs/plugin-react": "^4.3.4", "typescript": "^5.7.3", "vite": "^6.0.5"}
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "format": "npx --yes prettier@3.6.2 --write \"src/**/*.{ts,tsx,css}\" \"index.html\"",
+    "format:check": "npx --yes prettier@3.6.2 --check \"src/**/*.{ts,tsx,css}\" \"index.html\""
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.5"
+  }
 }
