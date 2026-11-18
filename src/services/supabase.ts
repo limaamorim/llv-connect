@@ -50,8 +50,9 @@ export async function entrar(email: string, senha: string) {
 }
 
 export async function listarProdutos(admin = false): Promise<Produto[]> {
+  const colunas = admin ? '*' : 'id,nome,descricao,categoria,preco,estoque,imagem,modelos,destaque,novidade,ativo';
   const filtro = admin ? '' : '&ativo=eq.true';
-  return requisicao('/rest/v1/produtos?select=*&order=id.desc' + filtro, {}, admin);
+  return requisicao('/rest/v1/produtos?select=' + colunas + '&order=id.desc' + filtro, {}, admin);
 }
 export async function listarCategorias(): Promise<CategoriaLoja[]> {
   return requisicao('/rest/v1/categorias?select=*&order=nome.asc');
