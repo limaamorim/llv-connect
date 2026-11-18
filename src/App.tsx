@@ -12,7 +12,6 @@ import { Admin } from './pages/Admin';
 import {
   buscarProdutosPublicos,
   buscarCategoriasPublicas,
-  catalogoConfigurado,
 } from './services/catalogoService';
 import type { CategoriaPublica } from './services/catalogoService';
 import { loja } from './data/loja';
@@ -206,11 +205,6 @@ export default function App() {
         </p>
       )}
 
-      {!catalogoConfigurado && (
-        <div className="demo-notice">
-          Vitrine demonstrativa: produtos e preços fictícios.
-        </div>
-      )}
 
       {carregandoCatalogo && (
         <p className="container estado-catalogo" role="status">
