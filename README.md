@@ -24,7 +24,7 @@ Pegue os valores em **Supabase > Project Settings > API Keys** ou na opção **C
 
 **Nunca coloque senha, service_role ou sb_secret_... no frontend.** O arquivo `.env.local` é ignorado pelo Git.
 
-Reinicie `npm run dev` depois de modificar as variáveis.
+Reinicie `npm run dev` depois de modificar as variáveis. Sem essa configuração, o site não apresenta produtos fictícios ao cliente: mostra que o catálogo está em preparação.
 
 ## 2. Preparar o catálogo
 
