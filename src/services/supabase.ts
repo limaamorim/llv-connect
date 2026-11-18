@@ -24,7 +24,7 @@ async function requisicao(caminho: string, opcoes: RequestInit = {}, privado = f
     ...opcoes,
     headers: {
       apikey: chave,
-      Authorization: 'Bearer ' + (privado ? sessao?.access_token : chave),
+      ...(privado ? { Authorization: 'Bearer ' + sessao?.access_token } : {}),
       'Content-Type': 'application/json',
       ...opcoes.headers,
     },
