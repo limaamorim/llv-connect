@@ -3448,3 +3448,12 @@ button {
   color: #0879f9;
   font-size: 11px;
 }
+
+/* Mensagem de carregamento durante a consulta pública ao Supabase. */
+.estado-catalogo {
+  margin-top: 18px;
+  margin-bottom: 18px;
+  color: #60748d;
+  font-size: 14px;
+  text-align: center;
+}
